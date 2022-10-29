@@ -64,7 +64,7 @@ if __name__ == "__main__":
     mh.set_signals_use(sig_mh)
     
     #list datasets
-    datasets = [w]#, utd, p2, mh, us]
+    datasets = [p2]#, utd, p2, mh, us]
 
     for dataset in datasets:
         #preprocessing
