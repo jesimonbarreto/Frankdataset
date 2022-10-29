@@ -1,6 +1,6 @@
 import numpy as np                  # for working with tensors outside the network
 import pandas as pd                 # for data reading and writing
-import math
+import math, os
 import scipy.stats as st
 from scipy.interpolate import interp1d
 #from fastpip import pip
@@ -80,6 +80,31 @@ def select_features(X, y, d_act):
 
     y_new = to_categorical(y_new)
     return X_new, y_new
+
+
+def dataset_to_datasets(datasets_names):
+
+    tmp = np.load(datasets_names[0], allow_pickle=True)
+    X = tmp['X']
+    y = tmp['y']
+    folds = tmp['folds']
+    len_x = len(X)
+
+    for data_name in datasets_names[1:]:
+        tmp = np.load(datasets_names[0], allow_pickle=True)
+        X_ = tmp['X']
+        y_ = tmp['y']
+        folds_ = tmp['folds']
+        X = np.concatenate([X,X_])
+        y = np.concatenate([y,y_])
+        for i in range(0, len(folds)):
+            ##colocar todos os dados do dataset X_ no treino de folds...
+            n = np.concatenate([folds[i][0], [*range(len_x, len_x + len(X_))]])
+            folds[i][0] = n
+        len_x += len(X_)
+    
+    np.savez_compressed(os.path.join(datasets_names[0].split('.npz')[0]+'all'), X=X, y=y, folds=folds)
+    print('Create file '+ os.path.join(datasets_names[0].split('.npz')[0]+'all'))
 
 
 

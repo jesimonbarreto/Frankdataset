@@ -15,6 +15,7 @@ from Dataset.Uschad import SignalsUSCHAD as sus
 from Process.Manager import preprocess_datasets
 from Dataset.Nonsense19 import NonSense
 from Process.Protocol import Loso
+np.random.seed(12227)
 
 
 if __name__ == "__main__":
@@ -25,13 +26,16 @@ if __name__ == "__main__":
         dir_datasets = sys.argv[2]
         dir_save_file = sys.argv[3]
     else:
-        file_wisdm = '/home/jesimon/Documents/Project_sensors_dataset/wisdm/debug.txt'
-        dir_datasets = '/home/jesimon/Documents/Project_sensors_dataset/dataset_preprocess/'
-        dir_save_file = '/home/jesimon/Documents/Project_sensors_dataset/dataset_generated/'
-        file_utd1 = '/home/jesimon/Documents/Project_sensors_dataset/dataset/Inertial/'
-        file_pm = '/home/jesimon/Documents/Project_sensors_dataset/dataset/PAMAP2_Dataset/'
-        file_mh = '/home/jesimon/Documents/Project_sensors_dataset/dataset/MHEALTHDATASET/'
-        file_us = '/home/jesimon/Documents/Project_sensors_dataset/dataset/USC-HAD/'
+        #'/home/jesimon/Documents/Project_sensors_dataset/dataset/Inertial/'
+        file_wisdm = './../data/dataset/wisdm/debug.txt'
+        file_utd1 = './../data/dataset/Inertial/'
+        file_pm = './../data/dataset/PAMAP2_Dataset/'
+        file_mh = './../data/dataset/MHEALTHDATASET/'
+        file_us = './../data/dataset/USC-HAD/'
+        dir_datasets = './../data/preprocessed/'
+        dir_save_file = './../data/generated/'
+        freq = int(sys.argv[1])
+        
     
     #Creating datasets
     #name, dir_dataset, dir_save, freq = 100, trial_per_file=100000
@@ -42,34 +46,35 @@ if __name__ == "__main__":
     us = USCHAD('Uschad', file_us, dir_datasets, freq = 100, trials_per_file = 10000)
 
     #Define signals of each dataset
-    #sig_w = [sw.acc_front_pants_pocket_X, sw.acc_front_pants_pocket_Y, sw.acc_front_pants_pocket_Z]
-    #w.set_signals_use(sig_w)
+    sig_w = [sw.acc_front_pants_pocket_X, sw.acc_front_pants_pocket_Y, sw.acc_front_pants_pocket_Z]
+    w.set_signals_use(sig_w)
 
-    #sig_utd = [su.acc_hand_X, su.acc_hand_Y, su.acc_hand_Z]
-    #utd.set_signals_use(sig_utd)
+    sig_utd = [su.acc_hand_X, su.acc_hand_Y, su.acc_hand_Z]
+    utd.set_signals_use(sig_utd)
 
-    sig_pm = [sp.acc1_chest_X, sp.acc1_chest_Y, sp.acc1_chest_Z]
+    sig_pm = [sp.acc1_dominant_wrist_X, sp.acc1_dominant_wrist_Y, sp.acc1_dominant_wrist_Z]
     p2.set_signals_use(sig_pm)
     
-    #sig_pm = [sus.acc_front_right_hip_X,sus.acc_front_right_hip_Y,sus.acc_front_right_hip_Z]
-    #us.set_signals_use(sig_pm)
+    sig_us = [sus.acc_front_right_hip_X,sus.acc_front_right_hip_Y,sus.acc_front_right_hip_Z]
+    us.set_signals_use(sig_us)
 
-    #sig_m = [sm.acc_chest_X, sm.acc_chest_Y, sm.acc_chest_Z]
-    #mh.set_signals_use(sig_m)
+    sig_mh = [sm.acc_right_lower_arm_X, sm.acc_right_lower_arm_Y, sm.acc_right_lower_arm_Z]
+    mh.set_signals_use(sig_mh)
     
     #list datasets
-    datasets = [p2]
+    datasets = [w, utd, p2, mh, us]
 
-    #preprocessing
-    preprocess_datasets(datasets)
-    
-    #Creating Loso evaluate generating
-    generate_ev = Loso(datasets, overlapping = 0.0, time_wd=1)
-    #Save name of dataset in variable y
-    generate_ev.set_name_act()
-    #function to save information e data
-    #files = glob.glob(dir_datasets+'*.pkl')
-    generate_ev.simple_generate(dir_save_file, new_freq = 100)
+    for dataset in datasets:
+        #preprocessing
+        preprocess_datasets([dataset])
+        #Creating Loso evaluate generating
+        generate_ev = Loso([dataset], overlapping = 0.0, time_wd=1, type_interp= 'cubic')
+        generate_ev.type
+        #Save name of dataset in variable y
+        generate_ev.set_name_act()
+        #function to save information e data
+        #files = glob.glob(dir_datasets+'*.pkl')
+        generate_ev.simple_generate(dir_save_file, new_freq = freq)
     
 
 

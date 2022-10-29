@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 
 class Loso(object):
-    def __init__(self, list_datasets, overlapping = 0.0, time_wd=5):
+    def __init__(self, list_datasets, overlapping = 0.0, time_wd=5, type_interp= 'cubic'):
         self.list_datasets = list_datasets
         self.time_wd = time_wd
         self.activity = {}
@@ -27,6 +27,7 @@ class Loso(object):
         self.idx_subject = 1
         self.consult_label = {}
         self.name_act = False
+        self.type_interp = type_interp
 
     def add_consult_label(self, a):
         z = self.consult_label.copy()   # start with x's keys and values
@@ -107,9 +108,8 @@ class Loso(object):
                 samples = self.sw(trial = trial, freq = freq_data)
 
                 if freq_data != new_freq:
-                    type_interp = 'cubic'
                     try:
-                        samples = interpolate_sensors(samples, type_interp, new_freq * self.time_wd)
+                        samples = interpolate_sensors(samples, self.type_interp, new_freq * self.time_wd)
                     except:
                         print('Sample not used: size {}, local {}'.format(len(samples),file))
                 
