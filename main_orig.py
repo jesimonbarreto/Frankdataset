@@ -51,7 +51,7 @@ if __name__ == "__main__":
     sig_w = [sw.acc_front_pants_pocket_X, sw.acc_front_pants_pocket_Y, sw.acc_front_pants_pocket_Z]
     w.set_signals_use(sig_w)
 
-    sig_utd = [su.acc_right_wrist_X, su.acc_hand_Y, su.acc_hand_Z]
+    sig_utd = [su.acc_right_wrist_X, su.acc_right_wrist_Y, su.acc_right_wrist_Z]
     utd.set_signals_use(sig_utd)
 
     sig_pm = [sp.acc1_dominant_wrist_X, sp.acc1_dominant_wrist_Y, sp.acc1_dominant_wrist_Z]
