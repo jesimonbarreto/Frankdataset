@@ -4,9 +4,9 @@ from .custom_model import custom_model
 from .custom_model import custom_stopping
 from .custom_model import EarlyStoppingByLossVal
 from .Catal2015 import Catal
-#from .ChenXue2015 import model_chenxue
-#from .HaChoi_2016 import model_hachoi
-#from .Haetal_2015 import model_haetal
-#from .JiangYin_2015 import model_jiangyin
-#from .Kwapisz_2010 import model_kawapisz
-#from .Panwaretal_2017 import model_Panwaretal
+from .ChenXue2015 import ChenXue
+from .HaChoi_2016 import HaChoi
+from .Haetal_2015 import Haetal
+from .JiangYin_2015 import JiangYin
+from .Kwapisz_2010 import Kwapisz
+from .Panwaretal_2017 import Panwaretal

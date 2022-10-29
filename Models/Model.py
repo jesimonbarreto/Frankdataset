@@ -19,11 +19,11 @@ class Model(metaclass=ABCMeta):
     def code_y(self, y):
         self.encoder = OneHotEncoder(handle_unknown='ignore')
         self.encoder.fit(y.reshape(-1,1))
-        return self.encoder.transform(y)
+        return self.encoder.transform(y.reshape(-1,1))
     
     def uncode_y(self, y):
         if self.encoder!=None:
-            y = self.encoder.inverse_transform(y)
+            y = self.encoder.inverse_transform(y.reshape(-1,1))
         return y
     
     @abstractmethod

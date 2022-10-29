@@ -3,7 +3,7 @@ import custom_model as cm
 import numpy as np
 import random
 from sklearn.ensemble import RandomForestClassifier, VotingClassifier
-from sklearn.metrics.classification import accuracy_score, recall_score, f1_score
+from sklearn.metrics import accuracy_score, recall_score, f1_score
 import scipy.stats as st
 
 from keras.layers import Input, Dense, Dropout, Conv2D, Flatten, MaxPooling2D, Activation, AveragePooling2D
