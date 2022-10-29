@@ -18,7 +18,7 @@ class Model(metaclass=ABCMeta):
     
     def code_y(self, y):
         self.encoder = OneHotEncoder(handle_unknown='ignore')
-        self.encoder.fit(y)
+        self.encoder.fit(y.reshape(-1,1))
         return self.encoder.transform(y)
     
     def uncode_y(self, y):
