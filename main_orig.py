@@ -15,6 +15,8 @@ from Dataset.Uschad import SignalsUSCHAD as sus
 from Process.Manager import preprocess_datasets
 from Dataset.Nonsense19 import NonSense
 from Process.Protocol import Loso
+from Models import ManagerModels
+from Models import Catal
 np.random.seed(12227)
 
 
@@ -49,7 +51,7 @@ if __name__ == "__main__":
     sig_w = [sw.acc_front_pants_pocket_X, sw.acc_front_pants_pocket_Y, sw.acc_front_pants_pocket_Z]
     w.set_signals_use(sig_w)
 
-    sig_utd = [su.acc_hand_X, su.acc_hand_Y, su.acc_hand_Z]
+    sig_utd = [su.acc_right_wrist_X, su.acc_hand_Y, su.acc_hand_Z]
     utd.set_signals_use(sig_utd)
 
     sig_pm = [sp.acc1_dominant_wrist_X, sp.acc1_dominant_wrist_Y, sp.acc1_dominant_wrist_Z]
@@ -75,6 +77,10 @@ if __name__ == "__main__":
         #function to save information e data
         #files = glob.glob(dir_datasets+'*.pkl')
         generate_ev.simple_generate(dir_save_file, new_freq = freq)
-    
 
-
+    print('CLASSIFICATION')
+    c = Catal()
+    models = [c]
+    mm = ManagerModels(models)
+    result = mm.run_models(dir_save_file)
+    print(result)

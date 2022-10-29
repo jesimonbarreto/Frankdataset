@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH --qos=cpu
-#SBATCH -o ./../2-residuals/slurm/%J.out
+#SBATCH --qos=high
+#SBATCH -o ../outfiles/%J.out
 #SBATCH --mem=230GB 
 
 #conda remove --name frankdataset --all 
@@ -9,4 +9,8 @@ source activate frankdataset
 conda info --envs 
 
 
-srun python ./experimento_1.py
+srun python ./main_orig.py 10
+srun python ./main_orig.py 20
+srun python ./main_orig.py 30
+srun python ./main_orig.py 50
+srun python ./main_orig.py 100
