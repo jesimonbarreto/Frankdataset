@@ -72,7 +72,7 @@ if __name__ == "__main__":
         #Creating Loso evaluate generating
         generate_ev = Loso([dataset], overlapping = 0.0, time_wd=1, type_interp= 'cubic')
         #Save name of dataset in variable y
-        generate_ev.set_name_act()
+        #generate_ev.set_name_act()
         #function to save information e data
         #files = glob.glob(dir_datasets+'*.pkl')
         generate_ev.simple_generate(dir_save_file, new_freq = freq)
