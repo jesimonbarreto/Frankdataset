@@ -1,7 +1,7 @@
 import pickle
 import sys
 from abc import ABCMeta, abstractmethod
-
+from sklearn.preprocessing import OneHotEncoder
 import numpy as np
 import pandas as pd
 from scipy.io import loadmat
@@ -13,6 +13,19 @@ import csv
 #Examples: Walking, Standing, Upstairs
 #TODO create a file with all activities already used 
 class Model(metaclass=ABCMeta):
+    def __init__(self):
+        self.encoder = None
+    
+    def code_y(self, y):
+        self.encoder = OneHotEncoder(handle_unknown='ignore')
+        self.encoder.fit(y)
+        return self.encoder.transform(y)
+    
+    def uncode_y(self, y):
+        if self.encoder!=None:
+            y = self.encoder.inverse_transform(y)
+        return y
+    
     @abstractmethod
     def model_use(self, dir_files):
         pass

@@ -116,13 +116,10 @@ class Catal(Model):
             X = X[:, 0, :, :]
             y = tmp['y']
             folds = tmp['folds']
-            
-            print(y[0])
-            print(y.shape)
-            print(y)
+
+            y = self.code_y(y)
             
             n_class = y.shape[1]
-
             avg_acc = []
             avg_recall = []
             avg_f1 = []
