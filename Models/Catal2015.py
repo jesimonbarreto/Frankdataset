@@ -116,15 +116,16 @@ class Catal(Model):
             X = X[:, 0, :, :]
             y = tmp['y']
             folds = tmp['folds']
-
+            
+            print(y[0])
+            print(y.shape)
+            print(y)
+            
             n_class = y.shape[1]
 
             avg_acc = []
             avg_recall = []
             avg_f1 = []
-            print(y[0])
-            print(y.shape)
-            print(y)
             y = np.argmax(y, axis=1)
 
             print('Exp: Catal et al. 2015 {}'.format(data_input_file))
