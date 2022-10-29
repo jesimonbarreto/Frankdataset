@@ -71,7 +71,6 @@ if __name__ == "__main__":
         preprocess_datasets([dataset])
         #Creating Loso evaluate generating
         generate_ev = Loso([dataset], overlapping = 0.0, time_wd=1, type_interp= 'cubic')
-        generate_ev.type
         #Save name of dataset in variable y
         generate_ev.set_name_act()
         #function to save information e data
