@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --qos=high
-#SBATCH -o ../outfiles/%J.out
+#SBATCH -o ./outfiles/%J.out
 #SBATCH --mem=230GB 
 
 #conda remove --name frankdataset --all 
