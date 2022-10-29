@@ -10,10 +10,9 @@ from keras.layers import Input, Dense, Dropout, Conv2D, Flatten, MaxPooling2D, A
 from keras.callbacks import ReduceLROnPlateau, EarlyStopping, Callback
 from keras.models import Model
 from keras import backend as K
+
 import glob
-
 from .Model import Model
-
 from .custom_model import custom_model as cm
 from .custom_model import custom_stopping
 
