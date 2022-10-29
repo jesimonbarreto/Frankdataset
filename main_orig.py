@@ -29,13 +29,13 @@ if __name__ == "__main__":
         dir_save_file = sys.argv[3]
     else:
         #'/home/jesimon/Documents/Project_sensors_dataset/dataset/Inertial/'
-        file_wisdm = './../data/dataset/wisdm/debug.txt'
-        file_utd1 = './../data/dataset/Inertial/'
-        file_pm = './../data/dataset/PAMAP2_Dataset/'
-        file_mh = './../data/dataset/MHEALTHDATASET/'
-        file_us = './../data/dataset/USC-HAD/'
-        dir_datasets = './../data/preprocessed/'
-        dir_save_file = './../data/generated/'
+        file_wisdm = './data/dataset/wisdm/debug.txt'
+        file_utd1 = './data/dataset/Inertial/'
+        file_pm = './data/dataset/PAMAP2_Dataset/'
+        file_mh = './data/dataset/MHEALTHDATASET/'
+        file_us = './data/dataset/USC-HAD/'
+        dir_datasets = './data/preprocessed/'
+        dir_save_file = './data/generated/'
         freq = int(sys.argv[1])
         
     
