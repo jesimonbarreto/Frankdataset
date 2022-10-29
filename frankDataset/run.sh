@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH --qos=cpu
-#SBATCH -o ./../2-residuals/slurm/%J.out
+#SBATCH --qos=high
+#SBATCH -o ../outfiles/%J.out
 #SBATCH --mem=230GB 
 
 #conda remove --name frankdataset --all 
