@@ -8,7 +8,7 @@ from .Model import Model
 class Catal(Model):
     def __init__(self) -> None:
         super().__init__()
-        
+
     def A(self, sample):
         feat = []
         for col in range(0,sample.shape[1]):
@@ -111,7 +111,7 @@ class Catal(Model):
 
         for data_input_file in data_input_files:
         
-            tmp = np.load(data_input_file)
+            tmp = np.load(data_input_file, allow_pickle=True)
             X = tmp['X']
             X = X[:, 0, :, :]
             y = tmp['y']
