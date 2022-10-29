@@ -11,10 +11,10 @@ from keras.models import Model
 from keras import backend as K
 K.set_image_data_format('channels_first')
 
-from Models import Model
 import glob
-from custom_model import custom_model as cm
-from custom_model import custom_stopping
+from .Model import Model
+from .custom_model import custom_model as cm
+from .custom_model import custom_stopping
 
 class HaChoi(Model):
 

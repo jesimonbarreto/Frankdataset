@@ -10,10 +10,10 @@ from keras.callbacks import ReduceLROnPlateau, EarlyStopping, Callback
 from keras.models import Model
 from keras import backend as K
 K.set_image_data_format('channels_first')
-from custom_model import custom_model as cm
-from custom_model import custom_stopping
 import glob
-from Models import Model
+from .Model import Model
+from .custom_model import custom_model as cm
+from .custom_model import custom_stopping
 
 
 class Panwaretal(Model):

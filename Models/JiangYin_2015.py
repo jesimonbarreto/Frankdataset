@@ -8,10 +8,10 @@ from keras.layers import Input, Dense, Dropout, Conv2D, Flatten, MaxPooling2D, A
 from keras.callbacks import ReduceLROnPlateau, EarlyStopping, Callback
 from keras.models import Model
 from keras import backend as K
-from custom_model import custom_model as cm
-from custom_model import custom_stopping
-from Models import Model
 import glob
+from .Model import Model
+from .custom_model import custom_model as cm
+from .custom_model import custom_stopping
 
 K.set_image_data_format('channels_first')
 

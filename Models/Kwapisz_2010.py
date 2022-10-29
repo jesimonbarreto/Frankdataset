@@ -6,7 +6,9 @@ import sys
 import copy
 
 import glob
-from Models import Model
+from .Model import Model
+from .custom_model import custom_model as cm
+from .custom_model import custom_stopping
 
 class Kwapisz(Model):
     def A(self, sample):

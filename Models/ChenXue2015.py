@@ -1,5 +1,4 @@
 import sys
-from Models import Model
 import numpy as np
 import random
 from sklearn.ensemble import RandomForestClassifier, VotingClassifier
@@ -12,8 +11,11 @@ from keras.callbacks import ReduceLROnPlateau, EarlyStopping, Callback
 from keras.models import Model
 from keras import backend as K
 import glob
-from custom_model import custom_model as cm
-from custom_model import custom_stopping
+
+from .Model import Model
+
+from .custom_model import custom_model as cm
+from .custom_model import custom_stopping
 
 K.set_image_data_format('channels_first')
 
