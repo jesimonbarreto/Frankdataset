@@ -81,5 +81,5 @@ if __name__ == "__main__":
     c = Catal()
     models = [c]
     mm = ManagerModels(models)
-    result = mm.run_models(dir_save_file)
+    result = mm.run_models(dir_save_file+'*.npz')
     print(result)
