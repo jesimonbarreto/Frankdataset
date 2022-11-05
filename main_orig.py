@@ -102,5 +102,7 @@ if __name__ == "__main__":
 
     models = [cl,cx,hc,ht,jy,kz,pl]
     mm = ManagerModels(models)
+    result = mm.run_models(dir_save_file+'*.npz')
+    print(result)
     result = mm.run_models(dir_save_file_all+'*.npz')
     print(result)
