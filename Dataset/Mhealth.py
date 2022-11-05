@@ -34,16 +34,16 @@ actNameMHEALTH = {
     0:  'Nothing',
     1:  'Standing',
     2:  'Sitting',
-    3:  'Lying down',
+    3:  'Lying_down',
     4:  'Walking',
-    5:  'Climbing stairs',
-    6:  'Waist bends forward',
-    7:  'Frontal elevation of lower arms',
-    8:  'Knees bending (crouching)',
+    5:  'Climbing_stairs',
+    6:  'Waist_bends_forward',
+    7:  'Frontal_elevation_of_lower_arms',
+    8:  'Knees_bending_(crouching)',
     9:  'Cycling',
     10: 'Jogging',
     11: 'Running',
-    12: 'Jump front & back'
+    12: 'Jumping'
 }
 
 

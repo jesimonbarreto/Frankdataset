@@ -81,30 +81,33 @@ def select_features(X, y, d_act):
     y_new = to_categorical(y_new)
     return X_new, y_new
 
-
-def dataset_to_datasets(datasets_names):
-
-    tmp = np.load(datasets_names[0], allow_pickle=True)
-    X = tmp['X']
-    y = tmp['y']
-    folds = tmp['folds']
-    len_x = len(X)
-
-    for data_name in datasets_names[1:]:
-        tmp = np.load(datasets_names[0], allow_pickle=True)
-        X_ = tmp['X']
-        y_ = tmp['y']
-        folds_ = tmp['folds']
-        X = np.concatenate([X,X_])
-        y = np.concatenate([y,y_])
-        for i in range(0, len(folds)):
-            ##colocar todos os dados do dataset X_ no treino de folds...
-            n = np.concatenate([folds[i][0], [*range(len_x, len_x + len(X_))]])
-            folds[i][0] = n
-        len_x += len(X_)
+#debug - generate data -  classify
+def dataset_to_datasets(datasets_names, dir_save):
     
-    np.savez_compressed(os.path.join(datasets_names[0].split('.npz')[0]+'all'), X=X, y=y, folds=folds)
-    print('Create file '+ os.path.join(datasets_names[0].split('.npz')[0]+'all'))
+    for i in range(len(datasets_names)):
+        name_list = datasets_names.copy()
+        tmp = np.load(name_list[i], allow_pickle=True)
+        X = tmp['X']
+        y = tmp['y']
+        folds = tmp['folds']
+        len_x = len(X)
+        del name_list[i]
+
+        for data_name in name_list:
+            tmp = np.load(data_name, allow_pickle=True)
+            X_ = tmp['X']
+            y_ = tmp['y']
+            X = np.concatenate([X,X_])
+            y = np.concatenate([y,y_])
+            for i in range(0, len(folds)):
+                ##colocar todos os dados do dataset X_ no treino de folds...
+                n = np.concatenate([folds[i][0], [*range(len_x, len_x + len(X_))]])
+                folds[i][0] = n
+            len_x += len(X_)
+        name = os.path.join(dir_save, datasets_names[i].split('/')[-1].split('.')[0]+'all')
+        np.savez_compressed(name, X=X, y=y, folds=folds)
+        print('Create file '+ name+'.npz')
+    #return name+'.npz'
 
 
 

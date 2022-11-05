@@ -63,79 +63,77 @@ class HaChoi(Model):
         output = np.array(output)
         return output
 
-    def model_use(self, dir_files):
+    def model_use(self, data_input_file):
         #Paper: Multi-modal convolutional neural networks for activity recognition
         np.random.seed(12227)
 
-        data_input_files = glob.glob(dir_files)
+        tmp = np.load(data_input_file, allow_pickle=True)
+        X = tmp['X']
+        y = tmp['y']
+        folds = tmp['folds']
+        y = self.code_y(y)
+        n_class = y.shape[1]
 
-        result = {}
+        #Groups accelerometers and gyroscopes 0, 1, 2, 5, 6, 7, 14, 15, 16 = acc index (-1), 8, 9, 10, 17, 18, 19 = gyro index (-1)
+        #idx = [0, 1, 2, 5, 6, 7, 14, 15, 16, 8, 9, 10, 17, 18, 19]
+        #X = X[:, :, :, idx]
 
-        for data_input_file in data_input_files:
+        #idx = [3] #For UTD-MHAD, USCHAD, WISDM
+        idx = [3, 5, 8, 11, 14, 17, 20] #For MHEALTH
+        idx = [val for val in idx for _ in (0, 1)] #Vertical Kernel-1
 
-            tmp = np.load(data_input_file, allow_pickle=True)
-            X = tmp['X']
-            y = tmp['y']
-            folds = tmp['folds']
-            y = self.code_y(y)
-            n_class = y.shape[1]
+        X = self.zero_padding(X, idx)
+        _, _, img_rows, img_cols = X.shape
+        avg_acc = []
+        avg_recall = []
+        avg_f1 = []
 
-            #Groups accelerometers and gyroscopes 0, 1, 2, 5, 6, 7, 14, 15, 16 = acc index (-1), 8, 9, 10, 17, 18, 19 = gyro index (-1)
-            #idx = [0, 1, 2, 5, 6, 7, 14, 15, 16, 8, 9, 10, 17, 18, 19]
-            #X = X[:, :, :, idx]
+        print('Ha and Choi 2016 {}'.format(data_input_file))
 
-            #idx = [3] #For UTD-MHAD, USCHAD, WISDM
-            idx = [3, 5, 8, 11, 14, 17, 20] #For MHEALTH
-            idx = [val for val in idx for _ in (0, 1)] #Vertical Kernel-1
+        for i in range(0, len(folds)):
+            train_idx = folds[i][0]
+            test_idx = folds[i][1]
 
-            X = self.zero_padding(X, idx)
-            _, _, img_rows, img_cols = X.shape
-            avg_acc = []
-            avg_recall = []
-            avg_f1 = []
+            X_train = X[train_idx]
+            X_test = X[test_idx]
 
-            print('Ha and Choi 2016 {}'.format(data_input_file))
+            inp = Input((1, img_rows, img_cols))
+            model, inp_zeros = self.custom_model(inp, n_classes=n_class)
+            zeros_mat = np.zeros((X_train.shape[0], inp_zeros[0], inp_zeros[1], inp_zeros[2]))
 
-            for i in range(0, len(folds)):
-                train_idx = folds[i][0]
-                test_idx = folds[i][1]
+            model.compile(loss='categorical_crossentropy', metrics=['accuracy'], optimizer='Adadelta')
+            model.fit([X_train, zeros_mat], y[train_idx], batch_size=cm.bs, epochs=cm.n_ep,
+                    verbose=0, callbacks=[cm.custom_stopping(value=cm.loss, verbose=1)], validation_data=([X_train, zeros_mat], y[train_idx]))
 
-                X_train = X[train_idx]
-                X_test = X[test_idx]
+            zeros_mat = np.zeros((X_test.shape[0], inp_zeros[0], inp_zeros[1], inp_zeros[2]))
 
-                inp = Input((1, img_rows, img_cols))
-                model, inp_zeros = self.custom_model(inp, n_classes=n_class)
-                zeros_mat = np.zeros((X_train.shape[0], inp_zeros[0], inp_zeros[1], inp_zeros[2]))
+            y_pred = model.predict([X_test, zeros_mat])
+            y_pred = np.argmax(y_pred, axis=1)
 
-                model.compile(loss='categorical_crossentropy', metrics=['accuracy'], optimizer='Adadelta')
-                model.fit([X_train, zeros_mat], y[train_idx], batch_size=cm.bs, epochs=cm.n_ep,
-                        verbose=0, callbacks=[cm.custom_stopping(value=cm.loss, verbose=1)], validation_data=([X_train, zeros_mat], y[train_idx]))
+            y_true = np.argmax(y[test_idx], axis=1)
 
-                zeros_mat = np.zeros((X_test.shape[0], inp_zeros[0], inp_zeros[1], inp_zeros[2]))
+            acc_fold = accuracy_score(y_true, y_pred)
+            avg_acc.append(acc_fold)
 
-                y_pred = model.predict([X_test, zeros_mat])
-                y_pred = np.argmax(y_pred, axis=1)
+            recall_fold = recall_score(y_true, y_pred, average='macro')
+            avg_recall.append(recall_fold)
 
-                y_true = np.argmax(y[test_idx], axis=1)
+            f1_fold = f1_score(y_true, y_pred, average='macro')
+            avg_f1.append(f1_fold)
 
-                acc_fold = accuracy_score(y_true, y_pred)
-                avg_acc.append(acc_fold)
+            print('Accuracy[{:.4f}] Recall[{:.4f}] F1[{:.4f}] at fold[{}]'.format(acc_fold, recall_fold, f1_fold, i))
+            print('______________________________________________________')
+            del model
 
-                recall_fold = recall_score(y_true, y_pred, average='macro')
-                avg_recall.append(recall_fold)
-
-                f1_fold = f1_score(y_true, y_pred, average='macro')
-                avg_f1.append(f1_fold)
-
-                print('Accuracy[{:.4f}] Recall[{:.4f}] F1[{:.4f}] at fold[{}]'.format(acc_fold, recall_fold, f1_fold, i))
-                print('______________________________________________________')
-                del model
-
-            ic_acc = st.t.interval(0.9, len(avg_acc) - 1, loc=np.mean(avg_acc), scale=st.sem(avg_acc))
-            ic_recall = st.t.interval(0.9, len(avg_recall) - 1, loc=np.mean(avg_recall), scale=st.sem(avg_recall))
-            ic_f1 = st.t.interval(0.9, len(avg_f1) - 1, loc=np.mean(avg_f1), scale=st.sem(avg_f1))
-            print('Mean Accuracy[{:.4f}] IC [{:.4f}, {:.4f}]'.format(np.mean(avg_acc), ic_acc[0], ic_acc[1]))
-            print('Mean Recall[{:.4f}] IC [{:.4f}, {:.4f}]'.format(np.mean(avg_recall), ic_recall[0], ic_recall[1]))
-            print('Mean F1[{:.4f}] IC [{:.4f}, {:.4f}]'.format(np.mean(avg_f1), ic_f1[0], ic_f1[1]))
-            result[data_input_file] = [[np.mean(avg_acc), ic_acc[0], ic_acc[1]],[np.mean(avg_recall), ic_recall[0], ic_recall[1]],[np.mean(avg_f1), ic_f1[0], ic_f1[1]]]
+        ic_acc = st.t.interval(0.9, len(avg_acc) - 1, loc=np.mean(avg_acc), scale=st.sem(avg_acc))
+        ic_recall = st.t.interval(0.9, len(avg_recall) - 1, loc=np.mean(avg_recall), scale=st.sem(avg_recall))
+        ic_f1 = st.t.interval(0.9, len(avg_f1) - 1, loc=np.mean(avg_f1), scale=st.sem(avg_f1))
+        print('Mean Accuracy[{:.4f}] IC [{:.4f}, {:.4f}]'.format(np.mean(avg_acc), ic_acc[0], ic_acc[1]))
+        print('Mean Recall[{:.4f}] IC [{:.4f}, {:.4f}]'.format(np.mean(avg_recall), ic_recall[0], ic_recall[1]))
+        print('Mean F1[{:.4f}] IC [{:.4f}, {:.4f}]'.format(np.mean(avg_f1), ic_f1[0], ic_f1[1]))
+        result = [[np.mean(avg_acc), ic_acc[0], ic_acc[1]],[np.mean(avg_recall), ic_recall[0], ic_recall[1]],[np.mean(avg_f1), ic_f1[0], ic_f1[1]]]
         print('Final -------------------------------------------------------')
+        return result
+    
+    def get_details(self):
+        return "HaChoi"

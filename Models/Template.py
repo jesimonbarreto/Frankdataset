@@ -1,5 +1,5 @@
 import numpy as np
-from sklearn.metrics.classification import accuracy_score, recall_score, f1_score
+from sklearn.metrics import accuracy_score, recall_score, f1_score
 import scipy.stats as st
 import sys
 

@@ -15,18 +15,18 @@ class SignalsUSCHAD(Enum):
 
 
 actNameUSCHAD = {
-    1:  'Walk Forward',
-    2:  'Walk Left',
-    3:  'Walk Right',
-    4:  'Walk Up',
-    5:  'Walk Down',
-    6:  'Run',
-    7:  'Jump',
-    8:  'Sit',
-    9:  'Stand',
+    1:  'Walking',
+    2:  'Walking_left',
+    3:  'Walking_right',
+    4:  'Walking_up',
+    5:  'Walking_down',
+    6:  'Running',
+    7:  'Jumping',
+    8:  'Sitting',
+    9:  'Standing',
     10: 'Sleeping',
-    11: 'Elevator Up',
-    12: 'Elevator Down',
+    11: 'Elevator_up',
+    12: 'Elevator_down',
 }
 
 

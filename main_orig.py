@@ -16,9 +16,14 @@ from Process.Manager import preprocess_datasets
 from Dataset.Nonsense19 import NonSense
 from Process.Protocol import Loso
 from Models import ManagerModels
-from Models import Catal
+from Models import *
+from Signal.Transform import dataset_to_datasets
 np.random.seed(12227)
 
+def verifydir(dirlist):
+    for directory in dirlist:
+        if not os.path.exists(directory):
+            os.makedirs(directory)
 
 if __name__ == "__main__":
     
@@ -28,17 +33,21 @@ if __name__ == "__main__":
         dir_datasets = sys.argv[2]
         dir_save_file = sys.argv[3]
     else:
-        #'/home/jesimon/Documents/Project_sensors_dataset/dataset/Inertial/'
-        file_wisdm = './data/dataset/wisdm/debug.txt'
-        file_utd1 = './data/dataset/Inertial/'
-        file_pm = './data/dataset/PAMAP2_Dataset/'
-        file_mh = './data/dataset/MHEALTHDATASET/'
-        file_us = './data/dataset/USC-HAD/'
-        dir_datasets = './data/preprocessed/'
-        dir_save_file = './data/generated/'
-        freq = int(sys.argv[1])
-        
+        #dir_base = '/home/jesimon/Documents/Project_sensors_dataset/'#'./data/'
+        dir_base = './data/'
+        dir_data = 'dataset/'
+        file_wisdm = dir_base+dir_data+'wisdm/debug.txt'
+        file_utd1 = dir_base+dir_data+'Inertial/'
+        file_pm = dir_base+dir_data+'PAMAP2_Dataset/'
+        file_mh = dir_base+dir_data+'MHEALTHDATASET/'
+        file_us = dir_base+dir_data+'USC-HAD/'
+        dir_datasets = dir_base+'preprocessed/'
+        dir_save_file = dir_base+'generated/'
+        dir_save_file_all = dir_base+'generatedAll/'
+        freqs = [10,20,30,40,50,100]
     
+    dirlist = [dir_datasets,dir_save_file,dir_save_file_all]
+    verifydir(dirlist)
     #Creating datasets
     #name, dir_dataset, dir_save, freq = 100, trial_per_file=100000
     w = Wisdm('Wisdm', file_wisdm, dir_datasets, freq = 20, trials_per_file = 1000000)
@@ -64,22 +73,34 @@ if __name__ == "__main__":
     mh.set_signals_use(sig_mh)
     
     #list datasets
-    datasets = [p2]#, utd, p2, mh, us]
-
-    for dataset in datasets:
-        #preprocessing
-        preprocess_datasets([dataset])
-        #Creating Loso evaluate generating
-        generate_ev = Loso([dataset], overlapping = 0.0, time_wd=1, type_interp= 'cubic')
-        #Save name of dataset in variable y
-        #generate_ev.set_name_act()
-        #function to save information e data
-        #files = glob.glob(dir_datasets+'*.pkl')
-        generate_ev.simple_generate(dir_save_file, new_freq = freq)
-
+    datasets = [p2, us, utd, mh, w]
+    for freq in freqs:
+        join = []
+        for dataset in datasets:
+            #preprocessing
+            preprocess_datasets([dataset])
+            #Creating Loso evaluate generating
+            generate_ev = Loso([dataset], overlapping = 0.0, time_wd=1, type_interp= 'cubic')
+            #Save name of dataset in variable y
+            #generate_ev.set_name_act()
+            #function to save information e data
+            #files = glob.glob(dir_datasets+'*.pkl')
+            file_ = generate_ev.simple_generate(dir_save_file, new_freq = freq)
+            join.append(file_)
+        
+        dataset_to_datasets(join, dir_save_file_all)
     print('CLASSIFICATION')
-    c = Catal()
-    models = [c]
+    
+    #colocar tudo interno no costrutor e so precisar passar string com os codigos
+    cl = Catal()
+    cx = ChenXue()
+    hc = HaChoi()
+    ht = Haetal()
+    jy = JiangYin()
+    kz = Kwapisz()
+    pl = Panwaretal()
+
+    models = [cl,cx,hc,ht,jy,kz,pl]
     mm = ManagerModels(models)
-    result = mm.run_models(dir_save_file+'*.npz')
+    result = mm.run_models(dir_save_file_all+'*.npz')
     print(result)

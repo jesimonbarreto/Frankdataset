@@ -1,3 +1,4 @@
+from os import execv
 import pickle
 import sys
 from abc import ABCMeta, abstractmethod
@@ -6,7 +7,7 @@ import numpy as np
 import pandas as pd
 from scipy.io import loadmat
 import random
-import csv
+import csv, glob
 
 
 #Class name pattern - use gerund with the first capital letter
@@ -27,7 +28,10 @@ class Model(metaclass=ABCMeta):
         return y
     
     @abstractmethod
-    def model_use(self, dir_files):
+    def model_use(self, data_input_file):
+        pass
+    @abstractmethod
+    def get_details(self):
         pass
 
 
@@ -36,5 +40,15 @@ class ManagerModels(object):
         self.models = models
     
     def run_models(self, dirmodels):
+        result = {} 
+        data_input_files = glob.glob(dirmodels)
         for model in self.models:
-            model.model_use(dirmodels)
+            for file_ in data_input_files:
+                try:
+                    name_data = file_.split('/')[-1]
+                    res = model.model_use(file_)
+                    result[model.get_details()+'-'+name_data].append(res)
+                except:
+                    print('\n\nModel: '+ model.get_details())
+                    print('dataset: '+ file_)
+        return result

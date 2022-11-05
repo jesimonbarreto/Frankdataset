@@ -44,69 +44,66 @@ class ChenXue(Model):
 
         return model
 
-    def model_use(self, dir_files):
+    def model_use(self, data_input_file):
         #Paper: A Deep Learning Approach to Human Activity Recognition Based on Single Accelerometer
         np.random.seed(12227)
-
         
-        data_input_files = glob.glob(dir_files)
+        tmp = np.load(data_input_file, allow_pickle=True)
+        X = tmp['X']
+        y = tmp['y']
+        folds = tmp['folds']
 
-        result = {}
+        y = self.code_y(y)
 
-        for data_input_file in data_input_files:
-            tmp = np.load(data_input_file, allow_pickle=True)
-            X = tmp['X']
-            y = tmp['y']
-            folds = tmp['folds']
+        n_class = y.shape[1]
+        _, _, img_rows, img_cols = X.shape
+        avg_acc = []
+        avg_recall = []
+        avg_f1 = []
 
-            y = self.code_y(y)
+        print('Exp: Chen and Xue 2015 {}'.format(data_input_file))
 
-            n_class = y.shape[1]
-            _, _, img_rows, img_cols = X.shape
-            avg_acc = []
-            avg_recall = []
-            avg_f1 = []
+        for i in range(0, len(folds)):
+            train_idx = folds[i][0]
+            test_idx = folds[i][1]
 
-            print('Exp: Chen and Xue 2015 {}'.format(data_input_file))
+            X_train = X[train_idx]
+            X_test = X[test_idx]
 
-            for i in range(0, len(folds)):
-                train_idx = folds[i][0]
-                test_idx = folds[i][1]
+            inp = Input((1, img_rows, img_cols))
+            model = self.custom_model_(inp, n_classes=n_class)
 
-                X_train = X[train_idx]
-                X_test = X[test_idx]
+            model.compile(loss='categorical_crossentropy', metrics=['accuracy'], optimizer='Adadelta')
+            model.fit(X_train, y[train_idx], batch_size=cm.bs, epochs=cm.n_ep,
+                    verbose=0, callbacks=[custom_stopping(value=cm.loss, verbose=1)], validation_data=(X_train, y[train_idx]))
 
-                inp = Input((1, img_rows, img_cols))
-                model = self.custom_model_(inp, n_classes=n_class)
+            y_pred = model.predict(X_test)
+            y_pred = np.argmax(y_pred, axis=1)
 
-                model.compile(loss='categorical_crossentropy', metrics=['accuracy'], optimizer='Adadelta')
-                model.fit(X_train, y[train_idx], batch_size=cm.bs, epochs=cm.n_ep,
-                        verbose=0, callbacks=[custom_stopping(value=cm.loss, verbose=1)], validation_data=(X_train, y[train_idx]))
+            y_true = np.argmax(y[test_idx], axis=1)
 
-                y_pred = model.predict(X_test)
-                y_pred = np.argmax(y_pred, axis=1)
+            acc_fold = accuracy_score(y_true, y_pred)
+            avg_acc.append(acc_fold)
 
-                y_true = np.argmax(y[test_idx], axis=1)
+            recall_fold = recall_score(y_true, y_pred, average='macro')
+            avg_recall.append(recall_fold)
 
-                acc_fold = accuracy_score(y_true, y_pred)
-                avg_acc.append(acc_fold)
+            f1_fold = f1_score(y_true, y_pred, average='macro')
+            avg_f1.append(f1_fold)
 
-                recall_fold = recall_score(y_true, y_pred, average='macro')
-                avg_recall.append(recall_fold)
+            print('Accuracy[{:.4f}] Recall[{:.4f}] F1[{:.4f}] at fold[{}]'.format(acc_fold, recall_fold, f1_fold, i))
+            print('______________________________________________________')
+            del model
 
-                f1_fold = f1_score(y_true, y_pred, average='macro')
-                avg_f1.append(f1_fold)
-
-                print('Accuracy[{:.4f}] Recall[{:.4f}] F1[{:.4f}] at fold[{}]'.format(acc_fold, recall_fold, f1_fold, i))
-                print('______________________________________________________')
-                del model
-
-            ic_acc = st.t.interval(0.9, len(avg_acc) - 1, loc=np.mean(avg_acc), scale=st.sem(avg_acc))
-            ic_recall = st.t.interval(0.9, len(avg_recall) - 1, loc=np.mean(avg_recall), scale=st.sem(avg_recall))
-            ic_f1 = st.t.interval(0.9, len(avg_f1) - 1, loc=np.mean(avg_f1), scale=st.sem(avg_f1))
-            print('Mean Accuracy[{:.4f}] IC [{:.4f}, {:.4f}]'.format(np.mean(avg_acc), ic_acc[0], ic_acc[1]))
-            print('Mean Recall[{:.4f}] IC [{:.4f}, {:.4f}]'.format(np.mean(avg_recall), ic_recall[0], ic_recall[1]))
-            print('Mean F1[{:.4f}] IC [{:.4f}, {:.4f}]'.format(np.mean(avg_f1), ic_f1[0], ic_f1[1]))
-            result[data_input_file] = [[np.mean(avg_acc), ic_acc[0], ic_acc[1]],[np.mean(avg_recall), ic_recall[0], ic_recall[1]],[np.mean(avg_f1), ic_f1[0], ic_f1[1]]]
+        ic_acc = st.t.interval(0.9, len(avg_acc) - 1, loc=np.mean(avg_acc), scale=st.sem(avg_acc))
+        ic_recall = st.t.interval(0.9, len(avg_recall) - 1, loc=np.mean(avg_recall), scale=st.sem(avg_recall))
+        ic_f1 = st.t.interval(0.9, len(avg_f1) - 1, loc=np.mean(avg_f1), scale=st.sem(avg_f1))
+        print('Mean Accuracy[{:.4f}] IC [{:.4f}, {:.4f}]'.format(np.mean(avg_acc), ic_acc[0], ic_acc[1]))
+        print('Mean Recall[{:.4f}] IC [{:.4f}, {:.4f}]'.format(np.mean(avg_recall), ic_recall[0], ic_recall[1]))
+        print('Mean F1[{:.4f}] IC [{:.4f}, {:.4f}]'.format(np.mean(avg_f1), ic_f1[0], ic_f1[1]))
+        result = [[np.mean(avg_acc), ic_acc[0], ic_acc[1]],[np.mean(avg_recall), ic_recall[0], ic_recall[1]],[np.mean(avg_f1), ic_f1[0], ic_f1[1]]]
         print('Final -------------------------------------------------------')
         return result
+    
+    def get_details(self):
+        return "ChenXue"

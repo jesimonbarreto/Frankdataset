@@ -18,9 +18,9 @@ class SignalsUtdmhad2(Enum):
 actNameUTDMHAD2 = {
         22: 'Jogging',
         23: 'Walking',
-        24: 'Sit to stand',
-        25: 'Stand to sit',
-        26: 'Forward lunge',
+        24: 'Sitting',
+        25: 'Standing',
+        26: 'Forward_lunge',
         27: 'Squat'}
 
 

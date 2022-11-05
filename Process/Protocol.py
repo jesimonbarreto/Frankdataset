@@ -201,6 +201,7 @@ class Loso(object):
             print('Activities performed by less than 2 subjects')
             for row in invalid_rows:
                 print(row)
+            return os.path.join(dir_save_file,name_file+'.npz')
         except:
             print("[ERRO] Divisão em protocolo LOSO falhou. Verifique o número de classes do dataset!")
 
