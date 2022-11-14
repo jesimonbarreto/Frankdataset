@@ -13,7 +13,7 @@ from Dataset.Pamap2 import SignalsPAMAP2 as sp
 
 from Process.Protocol import Loso
 
-def preprocess_datasets(datasets):
+def preprocess_datasets(datasets, replace=False):
     num_dim_signals = -1
     for dtb in datasets:
         if num_dim_signals == -1:
@@ -25,4 +25,7 @@ def preprocess_datasets(datasets):
 
     for dtb in datasets:
         #load and save file preprocess
-        dtb.preprocess()
+        if replace or not dtb.verify_preprocessed():
+            dtb.preprocess()
+        else:
+            print('Dataset preprocess exist')

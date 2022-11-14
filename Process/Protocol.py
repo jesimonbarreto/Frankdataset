@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 
 class Loso(object):
-    def __init__(self, list_datasets, overlapping = 0.0, time_wd=5, type_interp= 'cubic'):
+    def __init__(self, list_datasets, overlapping = 0.0, time_wd=5, type_interp= 'cubic', replace = False):
         self.list_datasets = list_datasets
         self.time_wd = time_wd
         self.activity = {}
@@ -28,6 +28,7 @@ class Loso(object):
         self.consult_label = {}
         self.name_act = False
         self.type_interp = type_interp
+        self.replace = replace
 
     def add_consult_label(self, a):
         z = self.consult_label.copy()   # start with x's keys and values
@@ -151,6 +152,10 @@ class Loso(object):
             name_file = '{}_f{}_t{}'.format(self.list_datasets[0].name, new_freq, self.time_wd)
         else:
             name_file = 'Multi_f{}_t{}'.format(new_freq, self.time_wd)
+        name_test_file = os.path.join(dir_save_file,name_file+'.npz')
+        if not self.replace and os.path.exists(name_test_file):
+            print('File '+ name_test_file +' exist')
+            return name_test_file
         files_s = {}
         for id_, dtb in enumerate(self.list_datasets):
             files_s[dtb.name] = []

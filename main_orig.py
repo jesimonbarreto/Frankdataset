@@ -33,8 +33,8 @@ if __name__ == "__main__":
         dir_datasets = sys.argv[2]
         dir_save_file = sys.argv[3]
     else:
-        #dir_base = '/home/jesimon/Documents/Project_sensors_dataset/'#'./data/'
-        dir_base = './data/'
+        dir_base = '/home/jesimon/Documents/Project_sensors_dataset/'#'./data/'
+        #dir_base = './data/'
         dir_data = 'dataset/'
         file_wisdm = dir_base+dir_data+'wisdm/debug.txt'
         file_utd1 = dir_base+dir_data+'Inertial/'
@@ -44,7 +44,7 @@ if __name__ == "__main__":
         dir_datasets = dir_base+'preprocessed/'
         dir_save_file = dir_base+'generated/'
         dir_save_file_all = dir_base+'generatedAll/'
-        freqs = [10,20,30,40,50,100]
+        freqs = [10]#[10,20,30,40,50,100]
     
     dirlist = [dir_datasets,dir_save_file,dir_save_file_all]
     verifydir(dirlist)
@@ -73,14 +73,17 @@ if __name__ == "__main__":
     mh.set_signals_use(sig_mh)
     
     #list datasets
-    datasets = [p2, us, utd, mh, w]
+    datasets = [p2, us, utd, mh]
     for freq in freqs:
         join = []
         for dataset in datasets:
             #preprocessing
-            preprocess_datasets([dataset])
+            preprocess_datasets([dataset], replace=False)
             #Creating Loso evaluate generating
-            generate_ev = Loso([dataset], overlapping = 0.0, time_wd=1, type_interp= 'cubic')
+            generate_ev = Loso([dataset], overlapping = 0.0,
+                        time_wd=1,
+                        type_interp= 'cubic',
+                        replace=False)
             #Save name of dataset in variable y
             #generate_ev.set_name_act()
             #function to save information e data
@@ -88,7 +91,7 @@ if __name__ == "__main__":
             file_ = generate_ev.simple_generate(dir_save_file, new_freq = freq)
             join.append(file_)
         
-        dataset_to_datasets(join, dir_save_file_all)
+        dataset_to_datasets(join, dir_save_file_all, replace = True, norm = False)
     print('CLASSIFICATION')
     
     #colocar tudo interno no costrutor e so precisar passar string com os codigos

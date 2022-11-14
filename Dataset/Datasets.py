@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from scipy.io import loadmat
 import random
-import csv
+import csv, os
 
 
 #Class name pattern - use gerund with the first capital letter
@@ -37,6 +37,12 @@ class Dataset(metaclass=ABCMeta):
 
         np.savetxt(X=trial, fmt='%s', fname=output_file_name, delimiter=' ')
     
+    def verify_preprocessed(self):
+        name = self.dir_save+self.name+'_'+str(0)+'.pkl'
+        if os.path.exists(name):
+            return True
+        return False
+
     def set_signals_use(self, signals):
         for s in signals:
             self.signals_use.append(s)

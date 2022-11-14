@@ -5,6 +5,7 @@ import scipy.stats as st
 from scipy.interpolate import interp1d
 #from fastpip import pip
 import matplotlib.pyplot as plt
+from sklearn.preprocessing import MinMaxScaler
 
 
 def sampling_rate(data, rate_reduc):
@@ -82,9 +83,13 @@ def select_features(X, y, d_act):
     return X_new, y_new
 
 #debug - generate data -  classify
-def dataset_to_datasets(datasets_names, dir_save):
+def dataset_to_datasets(datasets_names, dir_save, replace = False, norm = False):
     
     for i in range(len(datasets_names)):
+        name = os.path.join(dir_save, datasets_names[i].split('/')[-1].split('.')[0]+'all')
+        if not replace and os.path.exists(name+'.npz'):
+            print('File '+ name+'.npz exist')
+            continue
         name_list = datasets_names.copy()
         tmp = np.load(name_list[i], allow_pickle=True)
         X = tmp['X']
@@ -92,17 +97,28 @@ def dataset_to_datasets(datasets_names, dir_save):
         folds = tmp['folds']
         len_x = len(X)
         del name_list[i]
-
+        #define normalization
+        if norm:
+            scaler = MinMaxScaler()
+            shp = X.shape
+            X = scaler.fit_transform(X.reshape(shp[0], shp[1]*shp[2]*shp[3]))
+            X = X.reshape(shp)
         for data_name in name_list:
             tmp = np.load(data_name, allow_pickle=True)
             X_ = tmp['X']
             y_ = tmp['y']
+            #define normalization
+            if norm:
+                shp = X_.shape
+                scaler = MinMaxScaler()
+                X_ = scaler.fit_transform(X_.reshape(shp[0], shp[1]*shp[2]*shp[3]))
+                X_ = X_.reshape(shp)
             X = np.concatenate([X,X_])
             y = np.concatenate([y,y_])
-            for i in range(0, len(folds)):
+            for j in range(0, len(folds)):
                 ##colocar todos os dados do dataset X_ no treino de folds...
-                n = np.concatenate([folds[i][0], [*range(len_x, len_x + len(X_))]])
-                folds[i][0] = n
+                n = np.concatenate([folds[j][0], [*range(len_x, len_x + len(X_))]])
+                folds[j][0] = n
             len_x += len(X_)
         name = os.path.join(dir_save, datasets_names[i].split('/')[-1].split('.')[0]+'all')
         np.savez_compressed(name, X=X, y=y, folds=folds)
