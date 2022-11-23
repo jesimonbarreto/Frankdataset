@@ -59,7 +59,7 @@ class simpleNet(Model):
             X_test = X[test_idx]
 
             inp = Input((1, img_rows, img_cols))
-            model = custom_model2(inp, n_classes=n_class)
+            model = self.custom_model2(inp, n_classes=n_class)
 
             model.compile(loss='categorical_crossentropy', metrics=['accuracy'], optimizer='Adadelta')
             model.fit(X_train, y[train_idx], batch_size=cm.bs, epochs=cm.n_ep,
@@ -94,5 +94,5 @@ class simpleNet(Model):
         print('Final -------------------------------------------------------')
         return result
 
-        def get_details(self):
-            return "Simple net"
+    def get_details(self):
+        return "Simple net"
