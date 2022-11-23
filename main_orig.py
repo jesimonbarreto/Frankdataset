@@ -60,7 +60,7 @@ if __name__ == "__main__":
     us = USCHAD('Uschad', file_us, dir_datasets, freq = 100, trials_per_file = 10000)
 
     #Define signals of each dataset
-    sig_w = [sw.acc_front_pants_pocket_X, sw.acc_front_pants_pocket_Y, sw.acc_front_pants_pocket_Z]
+    """sig_w = [sw.acc_front_pants_pocket_X, sw.acc_front_pants_pocket_Y, sw.acc_front_pants_pocket_Z]
     w.set_signals_use(sig_w)
 
     sig_utd = [su.acc_right_wrist_X, su.acc_right_wrist_Y, su.acc_right_wrist_Z]
@@ -100,7 +100,7 @@ if __name__ == "__main__":
             print(join)
     
     print('CLASSIFICATION')
-    
+    """
     #colocar tudo interno no costrutor e so precisar passar string com os codigos
     cl = Catal()
     sn = simpleNet()
@@ -111,7 +111,7 @@ if __name__ == "__main__":
     kz = Kwapisz()
     pl = Panwaretal()
 
-    models = [cl,sn,kz]
+    models = [sn,kz]
     mm = ManagerModels(models)
     result = mm.run_models(dir_save_file+'*.npz')
     print(result)
