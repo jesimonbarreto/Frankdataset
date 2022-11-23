@@ -47,7 +47,7 @@ if __name__ == "__main__":
         freqs = [20,50,100]
         time_wd=5
         type_interp= 'cubic'
-        norm = True
+        norm = False
     
     dirlist = [dir_datasets,dir_save_file,dir_save_file_all]
     verifydir(dirlist)
