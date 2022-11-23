@@ -95,4 +95,4 @@ class simpleNet(Model):
         return result
 
         def get_details(self):
-        return "Simple net"
+            return "Simple net"
