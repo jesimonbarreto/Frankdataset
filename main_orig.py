@@ -76,7 +76,7 @@ if __name__ == "__main__":
     mh.set_signals_use(sig_mh)
     
     #list datasets
-    datasets = [p2, us, utd, mh, w]
+    datasets = [p2, us, utd, mh]
     for freq in freqs:
         join = []
         for dataset in datasets:
