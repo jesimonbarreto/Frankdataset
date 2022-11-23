@@ -59,7 +59,7 @@ if __name__ == "__main__":
     mh = MHEALTH('Mhealth', file_mh, dir_datasets, freq = 100, trials_per_file = 10000)
     us = USCHAD('Uschad', file_us, dir_datasets, freq = 100, trials_per_file = 10000)
 
-    #Define signals of each dataset
+    """#Define signals of each dataset
     sig_w = [sw.acc_front_pants_pocket_X, sw.acc_front_pants_pocket_Y, sw.acc_front_pants_pocket_Z]
     w.set_signals_use(sig_w)
 
@@ -98,7 +98,7 @@ if __name__ == "__main__":
         except:
             print('erro')
             print(join)
-    
+    """
     print('CLASSIFICATION')
     
     #colocar tudo interno no costrutor e so precisar passar string com os codigos
