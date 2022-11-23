@@ -11,12 +11,12 @@ from keras.models import Model
 from keras import backend as K
 K.set_image_data_format('channels_first')
 
-from .Model import Model
+from .Model import Model as MD
 from .custom_model import custom_model as cm
 from .custom_model import custom_stopping
 
 
-class simpleNet(Model):
+class simpleNet(MD):
     def custom_model2(self, inp, n_classes=None):
         H = Conv2D(filters=24, kernel_size=(12, 2))(inp)
         H = Activation('relu')(H)
@@ -63,7 +63,7 @@ class simpleNet(Model):
 
             model.compile(loss='categorical_crossentropy', metrics=['accuracy'], optimizer='Adadelta')
             model.fit(X_train, y[train_idx], batch_size=cm.bs, epochs=cm.n_ep,
-                    verbose=0, callbacks=[cm.custom_stopping(value=cm.loss, verbose=1)], validation_data=(X_train, y[train_idx]))
+                    verbose=2, callbacks=[custom_stopping(value=cm.loss, verbose=1)], validation_data=(X_train, y[train_idx]))
 
             y_pred = model.predict(X_test)
             y_pred = np.argmax(y_pred, axis=1)

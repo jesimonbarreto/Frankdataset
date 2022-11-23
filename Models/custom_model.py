@@ -5,11 +5,10 @@ from keras.models import Model
 from keras import backend as K
 K.set_image_data_format('channels_first')
 
-class custom_model(object):
-    def __init__(self):    
-        self.n_ep = 200
-        self.loss = 0.2
-        self.bs = 1000
+class custom_model(object):  
+    n_ep = 200
+    loss = 0.2
+    bs = 1000
 
 def custom_stopping(value=0.5, verbose=0):
     early = EarlyStoppingByLossVal(monitor='val_loss', value=value, verbose=verbose)
