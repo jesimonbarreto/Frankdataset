@@ -93,8 +93,12 @@ if __name__ == "__main__":
             #files = glob.glob(dir_datasets+'*.pkl')
             file_ = generate_ev.simple_generate(dir_save_file, new_freq = freq)
             join.append(file_)
-        
-        dataset_to_datasets(join, dir_save_file_all, replace = True, norm = norm)
+        try:
+            dataset_to_datasets(join, dir_save_file_all, replace = True, norm = norm)
+        except:
+            print('erro')
+            print(join)
+    
     print('CLASSIFICATION')
     
     #colocar tudo interno no costrutor e so precisar passar string com os codigos
