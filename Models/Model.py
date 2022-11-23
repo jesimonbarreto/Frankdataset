@@ -49,6 +49,8 @@ class ManagerModels(object):
                     res = model.model_use(file_)
                     result[model.get_details()+'-'+name_data].append(res)
                 except:
+                    print('Erro ao rodar modelo')
                     print('\n\nModel: '+ model.get_details())
                     print('dataset: '+ file_)
+        print(result)
         return result
