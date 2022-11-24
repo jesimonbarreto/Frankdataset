@@ -4,7 +4,6 @@
 #SBATCH --qos=high
 #SBATCH --mem=230GB 
 #SBATCH -o ./outfiles/%J.out
-#SBATCH --nodelist=viper01
 
 
 conda remove --name frankdataset --all 
