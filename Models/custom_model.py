@@ -6,7 +6,7 @@ from keras import backend as K
 K.set_image_data_format('channels_first')
 
 class custom_model(object):  
-    n_ep = 200
+    n_ep = 50
     loss = 0.2
     bs = 1000
 
