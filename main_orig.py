@@ -60,19 +60,26 @@ if __name__ == "__main__":
     us = USCHAD('Uschad', file_us, dir_datasets, freq = 100, trials_per_file = 10000)
 
     #Define signals of each dataset
-    """sig_w = [sw.acc_front_pants_pocket_X, sw.acc_front_pants_pocket_Y, sw.acc_front_pants_pocket_Z]
+    sig_w = [sw.acc_front_pants_pocket_X, sw.acc_front_pants_pocket_Y, sw.acc_front_pants_pocket_Z]
     w.set_signals_use(sig_w)
 
-    sig_utd = [su.acc_right_wrist_X, su.acc_right_wrist_Y, su.acc_right_wrist_Z]
+    sig_utd = [su.acc_right_wrist_X, su.acc_right_wrist_Y, su.acc_right_wrist_Z,
+                su.gyr_right_wrist_X, su.gyr_right_wrist_Y, su.gyr_right_wrist_Z]
     utd.set_signals_use(sig_utd)
 
-    sig_pm = [sp.acc1_dominant_wrist_X, sp.acc1_dominant_wrist_Y, sp.acc1_dominant_wrist_Z]
+    sig_pm = [sp.acc1_dominant_wrist_X, sp.acc1_dominant_wrist_Y, sp.acc1_dominant_wrist_Z,
+            sp.gyr_dominant_wrist_X, sp.gyr_dominant_wrist_Y, sp.gyr_dominant_wrist_Z    
+            ]
     p2.set_signals_use(sig_pm)
     
-    sig_us = [sus.acc_front_right_hip_X,sus.acc_front_right_hip_Y,sus.acc_front_right_hip_Z]
+    sig_us = [sus.acc_front_right_hip_X,sus.acc_front_right_hip_Y,sus.acc_front_right_hip_Z,
+                sus.gyr_front_right_hip_X, sus.gyr_front_right_hip_Y, sus.gyr_front_right_hip_Z
+            ]
     us.set_signals_use(sig_us)
 
-    sig_mh = [sm.acc_right_lower_arm_X, sm.acc_right_lower_arm_Y, sm.acc_right_lower_arm_Z]
+    sig_mh = [sm.acc_right_lower_arm_X, sm.acc_right_lower_arm_Y, sm.acc_right_lower_arm_Z,
+                sm.gyr_right_lower_arm_X, sm.gyr_right_lower_arm_Y, sm.gyr_right_lower_arm_Z
+            ]
     mh.set_signals_use(sig_mh)
     
     #list datasets
@@ -100,7 +107,6 @@ if __name__ == "__main__":
             print(join)
     
     print('CLASSIFICATION')
-    """
     #colocar tudo interno no costrutor e so precisar passar string com os codigos
     cl = Catal()
     sn = simpleNet()
