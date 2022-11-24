@@ -47,7 +47,7 @@ class ManagerModels(object):
                 #try:
                 name_data = file_.split('/')[-1]
                 res = model.model_use(file_)
-                result[model.get_details()+'-'+name_data].append(res)
+                #result[model.get_details()+'-'+name_data].append(res)
                 #except:
                 #    print('Erro ao rodar modelo')
                 #    print('\n\nModel: '+ model.get_details())
