@@ -11,3 +11,4 @@ from .JiangYin_2015 import JiangYin
 from .Kwapisz_2010 import Kwapisz
 from .Panwaretal_2017 import Panwaretal
 from .simple_net import simpleNet
+from .Sena2018 import Sena

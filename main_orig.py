@@ -33,8 +33,8 @@ if __name__ == "__main__":
         dir_datasets = sys.argv[2]
         dir_save_file = sys.argv[3]
     else:
-        #dir_base = '/home/jesimon/Documents/Project_sensors_dataset/'#'./data/'
-        dir_base = './data/'
+        dir_base = '/home/jesimon/Documents/Project_sensors_dataset/'#'./data/'
+        #dir_base = './data/'
         dir_data = 'dataset/'
         file_wisdm = dir_base+dir_data+'wisdm/debug.txt'
         file_utd1 = dir_base+dir_data+'Inertial/'
@@ -59,7 +59,7 @@ if __name__ == "__main__":
     mh = MHEALTH('Mhealth', file_mh, dir_datasets, freq = 100, trials_per_file = 10000)
     us = USCHAD('Uschad', file_us, dir_datasets, freq = 100, trials_per_file = 10000)
 
-    """#Define signals of each dataset
+    #Define signals of each dataset
     sig_w = [sw.acc_front_pants_pocket_X, sw.acc_front_pants_pocket_Y, sw.acc_front_pants_pocket_Z]
     w.set_signals_use(sig_w)
 
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     utd.set_signals_use(sig_utd)
 
     sig_pm = [sp.acc1_dominant_wrist_X, sp.acc1_dominant_wrist_Y, sp.acc1_dominant_wrist_Z,
-            sp.gyr_dominant_wrist_X, sp.gyr_dominant_wrist_Y, sp.gyr_dominant_wrist_Z    
+            sp.gyr_dominant_wrist_X, sp.gyr_dominant_wrist_Y, sp.gyr_dominant_wrist_Z   
             ]
     p2.set_signals_use(sig_pm)
     
@@ -106,7 +106,7 @@ if __name__ == "__main__":
             print('erro')
             print(join)
     
-    print('CLASSIFICATION')"""
+    print('CLASSIFICATION')
     #colocar tudo interno no costrutor e so precisar passar string com os codigos
     cl = Catal()
     sn = simpleNet()
@@ -116,8 +116,9 @@ if __name__ == "__main__":
     jy = JiangYin()
     kz = Kwapisz()
     pl = Panwaretal()
+    sen = Sena()
 
-    models = [sn,kz]
+    models = [sen,sn,kz]
     mm = ManagerModels(models)
     result = mm.run_models(dir_save_file+'*.npz')
     print(result)
