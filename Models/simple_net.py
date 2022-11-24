@@ -64,8 +64,9 @@ class simpleNet(MD):
 
             print(y_train.shape)
             print(X_train.shape)
-
-            inp = Input((1, img_rows, img_cols))
+            print(X_test.shape)
+            sp = X_train.shape
+            inp = Input((sp[1], sp[2], sp[3]))
             model = self.custom_model2(inp, n_classes=n_class)
 
             model.compile(loss='categorical_crossentropy', metrics=['accuracy'], optimizer='Adadelta')
