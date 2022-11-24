@@ -12,7 +12,7 @@ import keras
 from keras import backend as K
 from keras.models import load_model
 
-K.set_image_data_format('channels_first')
+K.set_image_data_format('channels_last')
 from .Model import Model as MD
 from .custom_model import custom_model as cm
 from .custom_model import custom_stopping
