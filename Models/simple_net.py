@@ -58,12 +58,18 @@ class simpleNet(MD):
             X_train = X[train_idx]
             X_test = X[test_idx]
 
+            y_train = y[train_idx]
+            print(y_train)
+
+            print(y_train.shape)
+            print(X_train.shape)
+
             inp = Input((1, img_rows, img_cols))
             model = self.custom_model2(inp, n_classes=n_class)
 
             model.compile(loss='categorical_crossentropy', metrics=['accuracy'], optimizer='Adadelta')
-            model.fit(X_train, y[train_idx], batch_size=cm.bs, epochs=cm.n_ep,
-                    verbose=0, callbacks=[custom_stopping(value=cm.loss, verbose=1)], validation_data=(X_train, y[train_idx]))
+            model.fit(X_train, y_train, batch_size=cm.bs, epochs=cm.n_ep,
+                    verbose=0, callbacks=[custom_stopping(value=cm.loss, verbose=1)], validation_data=(X_train, y_train))
 
             y_pred = model.predict(X_test)
             y_pred = np.argmax(y_pred, axis=1)

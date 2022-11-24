@@ -33,8 +33,8 @@ if __name__ == "__main__":
         dir_datasets = sys.argv[2]
         dir_save_file = sys.argv[3]
     else:
-        #dir_base = '/home/jesimon/Documents/Project_sensors_dataset/'#'./data/'
-        dir_base = './data/'
+        dir_base = '/home/jesimon/Documents/Project_sensors_dataset/'#'./data/'
+        #dir_base = './data/'
         dir_data = 'dataset/'
         file_wisdm = dir_base+dir_data+'wisdm/debug.txt'
         file_utd1 = dir_base+dir_data+'Inertial/'
