@@ -18,13 +18,13 @@ from .custom_model import custom_stopping
 
 class simpleNet(MD):
     def custom_model2(self, inp, n_classes=None):
-        H = Conv2D(filters=24, kernel_size=(12, 2))(inp)
+        H = Conv2D(filters=24, kernel_size=(12, 2), padding='same'))(inp)
         H = Activation('relu')(H)
-        H = MaxPooling2D(pool_size=(2, 1))(H)
+        H = MaxPooling2D(pool_size=1)(H)
 
-        H = Conv2D(filters=36, kernel_size=(12, 2))(H)
+        H = Conv2D(filters=36, kernel_size=(12, 2),, padding='same'))(H)
         H = Activation('relu')(H)
-        H = MaxPooling2D(pool_size=(2, 1))(H)
+        H = MaxPooling2D(pool_size=1)(H)
 
         H = Flatten()(H)
         H = Dense(n_classes)(H)
