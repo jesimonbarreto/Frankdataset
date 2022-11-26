@@ -48,6 +48,7 @@ if __name__ == "__main__":
         time_wd=5
         type_interp= 'cubic'#['slinear', 'quadratic', 'cubic', 'previous','next']
         norm = False
+        replace = True
     
     dirlist = [dir_datasets,dir_save_file,dir_save_file_all]
     verifydir(dirlist)
@@ -88,12 +89,12 @@ if __name__ == "__main__":
         join = []
         for dataset in datasets:
             #preprocessing
-            preprocess_datasets([dataset], replace=False)
+            preprocess_datasets([dataset], replace=replace)
             #Creating Loso evaluate generating
             generate_ev = Loso([dataset], overlapping = 0.0,
                         time_wd=time_wd,
                         type_interp=type_interp,
-                        replace=True)
+                        replace=replace)
             #Save name of dataset in variable y
             #generate_ev.set_name_act()
             #function to save information e data
