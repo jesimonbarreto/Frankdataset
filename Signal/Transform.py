@@ -28,15 +28,15 @@ def interpolate_sensors(samples, type_interp, n_samples, plot=False):
             size = int(smp.shape[0])
             x = np.linspace(0, size-1, num=size, endpoint=True)
             y = smp[:,sig]
-            f = interp1d(x, y, kind= type_interp)
+            f = interp1d(x, y, kind=type_interp)
             x_new = np.linspace(0, size-1, num=n_samples, endpoint=True)
             y_new = f(x_new)
-            s.append(y_new)
+            s.append(y_new.reshape(-1,1))
             if plot:
                 plt.plot(x, y, '--', x_new, y_new, 'o')
                 plt.xticks(x_new)
                 plt.show()
-        s = np.array(s)
+        s = np.concatenate(s,axis=-1)
         new_samples.append(s)
     #new_samples = np.array(new_samples)
     return new_samples

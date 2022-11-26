@@ -12,7 +12,7 @@ import keras
 from keras import backend as K
 from keras.models import load_model
 
-K.set_image_data_format('channels_last')
+K.set_image_data_format('channels_first')
 from .Model import Model as MD
 from .custom_model import custom_model as cm
 from .custom_model import custom_stopping
@@ -102,16 +102,15 @@ class Sena(MD):
     def model_use(self, data_input_file):
         np.random.seed(12227)
         
-        batch = 100
         tmp = np.load(data_input_file, allow_pickle=True)
         X = tmp['X']
         y = tmp['y']
         #print('SHAPE X {}'.format(X.shape))
         #sys.exit()
-
+        #[nsamples, channel1, time, axis]
         folds = tmp['folds']
         dataset_name = data_input_file.split('/')[-1]
-        data = [X]
+        data = [X[:,:,:,0:3],X[:,:,:,3:6]]
         y = self.code_y(y)
         #del data
         n_class = y.shape[1]
@@ -123,7 +122,7 @@ class Sena(MD):
 
         # ----------------------------variables of model -----------------
         pool = [(2, 2), (3, 3), (5, 2), (12, 2), (25, 2)]
-        #batch = 10
+        batch = 10
         print('Sena 2018 {}'.format(data_input_file))
         print('Pool  = {}'.format(pool))
         for i in range(0, len(folds)):
@@ -144,7 +143,7 @@ class Sena(MD):
 
 
             _model = self._kernelmlfusion(n_class, inputs, pool)
-            _model.fit(X_train, y_train, batch, cm.n_ep, verbose=0,
+            _model.fit(X_train, y_train,batch_size=None,epochs=cm.n_ep, verbose=0,
                         callbacks=[custom_stopping(value=cm.loss, verbose=1)],
                         validation_data=(X_train, y_train))
 

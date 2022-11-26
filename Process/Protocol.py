@@ -147,7 +147,8 @@ class Loso(object):
             Y[i, self.activity[y[i]]] = 1.
         return Y
 
-    def simple_generate(self, dir_save_file, new_freq = 20):
+    def simple_generate(self, dir_save_file, new_freq = -1):
+        
         if len(self.list_datasets) == 1:
             name_file = '{}_f{}_t{}'.format(self.list_datasets[0].name, new_freq, self.time_wd)
         else:
@@ -172,7 +173,8 @@ class Loso(object):
         
         #Matrix Activity (row) by Subject (col)    
         self.fundamental_matrix = np.zeros((len(self.activity),len(self.subject)))
-        
+        if new_freq == -1:
+            new_freq = self.list_datasets[0].freq
         for id_, dtb in enumerate(self.list_datasets):
             input_dir = dtb.dir_save
             dataset_name = dtb.name

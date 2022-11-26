@@ -47,7 +47,7 @@ if __name__ == "__main__":
         freqs = [20,50,100]
         time_wd=5
         type_interp= 'cubic'#['slinear', 'quadratic', 'cubic', 'previous','next']
-        norm = True
+        norm = False
     
     dirlist = [dir_datasets,dir_save_file,dir_save_file_all]
     verifydir(dirlist)
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     utd.set_signals_use(sig_utd)
 
     sig_pm = [sp.acc1_dominant_wrist_X, sp.acc1_dominant_wrist_Y, sp.acc1_dominant_wrist_Z,
-            sp.gyr_dominant_wrist_X, sp.gyr_dominant_wrist_Y, sp.gyr_dominant_wrist_Z   
+            sp.acc2_dominant_wrist_X, sp.acc2_dominant_wrist_Y, sp.acc2_dominant_wrist_Z   
             ]
     p2.set_signals_use(sig_pm)
     
@@ -83,12 +83,12 @@ if __name__ == "__main__":
     mh.set_signals_use(sig_mh)
     
     #list datasets
-    datasets = [p2, us, utd, mh]
+    datasets = [p2]
     for freq in freqs:
         join = []
         for dataset in datasets:
             #preprocessing
-            preprocess_datasets([dataset], replace=True)
+            preprocess_datasets([dataset], replace=False)
             #Creating Loso evaluate generating
             generate_ev = Loso([dataset], overlapping = 0.0,
                         time_wd=time_wd,
@@ -100,11 +100,11 @@ if __name__ == "__main__":
             #files = glob.glob(dir_datasets+'*.pkl')
             file_ = generate_ev.simple_generate(dir_save_file, new_freq = freq)
             join.append(file_)
-        try:
-            dataset_to_datasets(join, dir_save_file_all, replace = True, norm = norm)
-        except:
-            print('erro')
-            print(join)
+        #try:
+        #    dataset_to_datasets(join, dir_save_file_all, replace = True, norm = norm)
+        #except:
+        #    print('erro')
+        #    print(join)
     
     print('CLASSIFICATION')
     #colocar tudo interno no costrutor e so precisar passar string com os codigos
@@ -118,7 +118,7 @@ if __name__ == "__main__":
     pl = Panwaretal()
     sen = Sena()
 
-    models = [sen,sn,kz]
+    models = [sen]
     mm = ManagerModels(models)
     result = mm.run_models(dir_save_file+'*.npz')
     print(result)
