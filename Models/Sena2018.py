@@ -168,4 +168,4 @@ class Sena(MD):
             sys.stdout.flush()
     
     def get_details(self):
-        return "SimpleNet"
+        return "Sena2018"

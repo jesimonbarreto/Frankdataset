@@ -44,13 +44,13 @@ class ManagerModels(object):
         data_input_files = glob.glob(dirmodels)
         for model in self.models:
             for file_ in data_input_files:
-                try:
-                    name_data = file_.split('/')[-1]
-                    res = model.model_use(file_)
+                #try:
+                name_data = file_.split('/')[-1]
+                res = model.model_use(file_)
                 #result[model.get_details()+'-'+name_data].append(res)
-                except:
-                    print('Erro ao rodar modelo')
-                    print('\n\nModel: '+ model.get_details())
-                    print('dataset: '+ file_)
+                #except:
+                #    print('Erro ao rodar modelo')
+                #    print('\n\nModel: '+ model.get_details())
+                #    print('dataset: '+ file_)
         print(result)
         return result

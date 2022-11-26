@@ -29,6 +29,7 @@ class Loso(object):
         self.name_act = False
         self.type_interp = type_interp
         self.replace = replace
+        self.cont_sample_no_used = 0
 
     def add_consult_label(self, a):
         z = self.consult_label.copy()   # start with x's keys and values
@@ -127,7 +128,8 @@ class Loso(object):
                         self.groups.append(subject_idx_)
                         self.fundamental_matrix[label][subject_idx_] += 1
                     else:
-                        print("ERRORORORRORO: SAMPLE NAO USADAAAA DEVIDO TAMANHO")
+                        print("Erro: tamanho de sample inconsistente")
+                        self.cont_sample_no_used+=1
 
     def set_name_act(self):
         self.name_act = True
@@ -189,7 +191,7 @@ class Loso(object):
         self.groups = np.array(self.groups)
         self.X = np.array(self.X)
         #self.y = np.array(self.y)
-
+        print('Samples not used by size: '+str(self.cont_sample_no_used))
         invalid_rows = []
         for row in self.fundamental_matrix:
             print(row)

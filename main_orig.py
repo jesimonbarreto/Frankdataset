@@ -69,7 +69,7 @@ if __name__ == "__main__":
     utd.set_signals_use(sig_utd)
 
     sig_pm = [sp.acc1_dominant_wrist_X, sp.acc1_dominant_wrist_Y, sp.acc1_dominant_wrist_Z,
-            sp.acc2_dominant_wrist_X, sp.acc2_dominant_wrist_Y, sp.acc2_dominant_wrist_Z   
+            sp.gyr_dominant_wrist_X, sp.gyr_dominant_wrist_Y, sp.gyr_dominant_wrist_Z   
             ]
     p2.set_signals_use(sig_pm)
     
