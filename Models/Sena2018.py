@@ -60,11 +60,11 @@ class Sena(MD):
         import keras
         if activation == 'selu':
             hidden = keras.layers.core.Activation(activation)(tensor)
-            hidden = keras.layers.normalization.BatchNormalization()(hidden)
+            hidden = keras.layers.BatchNormalization()(hidden)
             hidden = keras.layers.noise.AlphaDropout(dropout_rate)(hidden)
         else:
             hidden = keras.layers.core.Activation(activation)(tensor)
-            hidden = keras.layers.normalization.BatchNormalization()(hidden)
+            hidden = keras.layers.BatchNormalization()(hidden)
             hidden = keras.layers.core.Dropout(dropout_rate)(hidden)
         return hidden
 
