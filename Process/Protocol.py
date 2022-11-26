@@ -105,7 +105,8 @@ class Loso(object):
                 trial = data[file]
 
 
-                
+                n_vlues = new_freq * self.time_wd
+                n_sensors = len(self.list_datasets[0].get_signals_use())
                 samples = self.sw(trial = trial, freq = freq_data)
 
                 if freq_data != new_freq:
@@ -114,15 +115,19 @@ class Loso(object):
                     except:
                         print('Sample not used: size {}, local {}'.format(len(samples),file))
                 
-                for i in range(0, len(samples)):
-                    self.X.append(np.array([samples[i]]))
-                    if self.name_act:
-                        act_name = data_name+'-'+label_
+                for mv_spl in samples:
+                    shp = mv_spl.shape
+                    if shp[0] == n_vlues and shp[1] == n_sensors: 
+                        self.X.append(np.array([mv_spl]))
+                        if self.name_act:
+                            act_name = data_name+'-'+label_
+                        else:
+                            act_name = label_
+                        self.y.append(act_name)
+                        self.groups.append(subject_idx_)
+                        self.fundamental_matrix[label][subject_idx_] += 1
                     else:
-                        act_name = label_
-                    self.y.append(act_name)
-                    self.groups.append(subject_idx_)
-                    self.fundamental_matrix[label][subject_idx_] += 1
+                        print("ERRORORORRORO: SAMPLE NAO USADAAAA DEVIDO TAMANHO")
 
     def set_name_act(self):
         self.name_act = True
