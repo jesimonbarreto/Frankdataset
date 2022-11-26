@@ -11,4 +11,4 @@ conda env create -f environment.yml
 source activate frankdataset 
 conda info --envs 
 
-srun python ./main_orig.py ./data PAMA-USC Jor-ss
+srun python ./main_orig.py ./data_jor PAMA-USC Jor-ss
