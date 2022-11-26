@@ -39,9 +39,8 @@ class ManagerModels(object):
     def __init__(self, models):
         self.models = models
     
-    def run_models(self, dirmodels):
+    def run_models(self, data_input_files):
         result = {} 
-        data_input_files = glob.glob(dirmodels)
         for model in self.models:
             for file_ in data_input_files:
                 #try:

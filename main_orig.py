@@ -28,13 +28,13 @@ def verifydir(dirlist):
 if __name__ == "__main__":
     
     #list_name_file = ['../','../']
-    if len(sys.argv) > 2:
+    if len(sys.argv) > 10:
         file_wisdm = sys.argv[1]
         dir_datasets = sys.argv[2]
         dir_save_file = sys.argv[3]
     else:
         #dir_base = '/home/jesimon/Documents/Project_sensors_dataset/'#'./data/'
-        dir_base = './data/'
+        dir_base = sys.argv[1] #'./data/'
         dir_data = 'dataset/'
         file_wisdm = dir_base+dir_data+'wisdm/debug.txt'
         file_utd1 = dir_base+dir_data+'Inertial/'
@@ -44,29 +44,31 @@ if __name__ == "__main__":
         dir_datasets = dir_base+'preprocessed/'
         dir_save_file = dir_base+'generated/'
         dir_save_file_all = dir_base+'generatedAll/'
+        dataset_exp = sys.argv[2].split('-')
+        model_exp = sys.argv[3].split('-')
         freqs = [20,50,100]
         time_wd=5
-        type_interp= 'cubic'#['slinear', 'quadratic', 'cubic', 'previous','next']
+        type_interp= ['slinear', 'quadratic', 'cubic']
         norm = False
-        replace = True
+        replace = False
     
     dirlist = [dir_datasets,dir_save_file,dir_save_file_all]
     verifydir(dirlist)
     #Creating datasets
     #name, dir_dataset, dir_save, freq = 100, trial_per_file=100000
-    w = Wisdm('Wisdm', file_wisdm, dir_datasets, freq = 20, trials_per_file = 1000000)
-    utd = UTDMHAD1('UTD1', file_utd1, dir_datasets, freq = 50, trials_per_file = 1000000)
+    #w = Wisdm('Wisdm', file_wisdm, dir_datasets, freq = 20, trials_per_file = 1000000)
+    #utd = UTDMHAD1('UTD1', file_utd1, dir_datasets, freq = 50, trials_per_file = 1000000)
     p2 = PAMAP2('Pamap2', file_pm, dir_datasets, freq = 100, trials_per_file = 10000)
-    mh = MHEALTH('Mhealth', file_mh, dir_datasets, freq = 100, trials_per_file = 10000)
+    #mh = MHEALTH('Mhealth', file_mh, dir_datasets, freq = 100, trials_per_file = 10000)
     us = USCHAD('Uschad', file_us, dir_datasets, freq = 100, trials_per_file = 10000)
 
     #Define signals of each dataset
-    sig_w = [sw.acc_front_pants_pocket_X, sw.acc_front_pants_pocket_Y, sw.acc_front_pants_pocket_Z]
-    w.set_signals_use(sig_w)
+    #sig_w = [sw.acc_front_pants_pocket_X, sw.acc_front_pants_pocket_Y, sw.acc_front_pants_pocket_Z]
+    #w.set_signals_use(sig_w)
 
-    sig_utd = [su.acc_right_wrist_X, su.acc_right_wrist_Y, su.acc_right_wrist_Z,
-                su.gyr_right_wrist_X, su.gyr_right_wrist_Y, su.gyr_right_wrist_Z]
-    utd.set_signals_use(sig_utd)
+    #sig_utd = [su.acc_right_wrist_X, su.acc_right_wrist_Y, su.acc_right_wrist_Z,
+    #            su.gyr_right_wrist_X, su.gyr_right_wrist_Y, su.gyr_right_wrist_Z]
+    #utd.set_signals_use(sig_utd)
 
     sig_pm = [sp.acc1_dominant_wrist_X, sp.acc1_dominant_wrist_Y, sp.acc1_dominant_wrist_Z,
             sp.gyr_dominant_wrist_X, sp.gyr_dominant_wrist_Y, sp.gyr_dominant_wrist_Z   
@@ -78,50 +80,66 @@ if __name__ == "__main__":
             ]
     us.set_signals_use(sig_us)
 
-    sig_mh = [sm.acc_right_lower_arm_X, sm.acc_right_lower_arm_Y, sm.acc_right_lower_arm_Z,
-                sm.gyr_right_lower_arm_X, sm.gyr_right_lower_arm_Y, sm.gyr_right_lower_arm_Z
-            ]
-    mh.set_signals_use(sig_mh)
+    #sig_mh = [sm.acc_right_lower_arm_X, sm.acc_right_lower_arm_Y, sm.acc_right_lower_arm_Z,
+    #            sm.gyr_right_lower_arm_X, sm.gyr_right_lower_arm_Y, sm.gyr_right_lower_arm_Z
+    #        ]
+    #mh.set_signals_use(sig_mh)
     
     #list datasets
-    datasets = [p2]
-    for freq in freqs:
-        join = []
-        for dataset in datasets:
-            #preprocessing
-            preprocess_datasets([dataset], replace=replace)
-            #Creating Loso evaluate generating
-            generate_ev = Loso([dataset], overlapping = 0.0,
-                        time_wd=time_wd,
-                        type_interp=type_interp,
-                        replace=replace)
-            #Save name of dataset in variable y
-            #generate_ev.set_name_act()
-            #function to save information e data
-            #files = glob.glob(dir_datasets+'*.pkl')
-            file_ = generate_ev.simple_generate(dir_save_file, new_freq = freq)
-            join.append(file_)
+    datasets = []
+    for de in dataset_exp:
+        if de == 'PAMA':
+            datasets.append(p2)
+        elif de == 'USC':
+            datasets.append(us)
+    
+    
+    files_run = []
+    for freq in freqs:  
+        for tip in type_interp:
+            for dataset in datasets:
+                #preprocessing
+                preprocess_datasets([dataset], replace=replace)
+                #Creating Loso evaluate generating
+                generate_ev = Loso([dataset], overlapping = 0.0,
+                            time_wd=time_wd,
+                            type_interp=tip,
+                            replace=replace)
+                #Save name of dataset in variable y
+                #generate_ev.set_name_act()
+                #function to save information e data
+                #files = glob.glob(dir_datasets+'*.pkl')
+                file_ = generate_ev.simple_generate(dir_save_file, new_freq = freq)
+                files_run.append(file_)
         #try:
-        #    dataset_to_datasets(join, dir_save_file_all, replace = True, norm = norm)
+        #dataset_to_datasets(join, dir_save_file_all, replace = True, norm = norm)
         #except:
         #    print('erro')
         #    print(join)
     
     print('CLASSIFICATION')
     #colocar tudo interno no costrutor e so precisar passar string com os codigos
-    cl = Catal()
+    #cl = Catal()
     sn = simpleNet()
-    cx = ChenXue()
-    hc = HaChoi()
-    ht = Haetal()
-    jy = JiangYin()
+    #cx = ChenXue()
+    #hc = HaChoi()
+    #ht = Haetal()
+    #jy = JiangYin()
     kz = Kwapisz()
-    pl = Panwaretal()
+    #pl = Panwaretal()
     sen = Sena()
 
-    models = [sen]
+    
+    models = []
+    
+    for me in model_exp:
+        if me == 'Sen':
+            models.append(sen)
+        elif me == 'Jor':
+            models.append(sn)
+        elif me == 'Kwa':
+            models.append(kz)
+
     mm = ManagerModels(models)
-    result = mm.run_models(dir_save_file+'*.npz')
-    print(result)
-    result = mm.run_models(dir_save_file_all+'*.npz')
+    result = mm.run_models(files_run)
     print(result)

@@ -157,7 +157,7 @@ class Loso(object):
     def simple_generate(self, dir_save_file, new_freq = -1):
         
         if len(self.list_datasets) == 1:
-            name_file = '{}_f{}_t{}'.format(self.list_datasets[0].name, new_freq, self.time_wd)
+            name_file = '{}_f{}_t{}_I{}'.format(self.list_datasets[0].name, new_freq, self.time_wd, self.type_interp)
         else:
             name_file = 'Multi_f{}_t{}'.format(new_freq, self.time_wd)
         name_test_file = os.path.join(dir_save_file,name_file+'.npz')
@@ -218,6 +218,9 @@ class Loso(object):
             return os.path.join(dir_save_file,name_file+'.npz')
         except:
             print("[ERRO] Divisão em protocolo LOSO falhou. Verifique o número de classes do dataset!")
+
+
+#==========================================================================================
 
 
 class MetaLearning(object):
@@ -445,7 +448,7 @@ class MetaLearning(object):
 
     def simple_generate(self, dir_save_file, new_freq=20):
         if len(self.list_datasets) == 1:
-            name_file = '{}_f{}_t{}'.format(self.list_datasets[0].name, new_freq, self.time_wd)
+            name_file = '{}_f{}_t{}_I{}'.format(self.list_datasets[0].name, new_freq, self.time_wd, self.type_interp)
         else:
 
             name_file = 'f{}_t{}_{}'.format(new_freq, self.time_wd, self.exp_name)

@@ -83,7 +83,7 @@ def select_features(X, y, d_act):
     return X_new, y_new
 
 #debug - generate data -  classify
-def dataset_to_datasets(datasets_names, dir_save, replace = False, norm = False):
+def dataset_to_datasets(datasets_names, dir_save, replace = False, norm = False, just_first=True):
     
     for i in range(len(datasets_names)):
         name = os.path.join(dir_save, datasets_names[i].split('/')[-1].split('.')[0]+'all')
@@ -123,6 +123,8 @@ def dataset_to_datasets(datasets_names, dir_save, replace = False, norm = False)
         name = os.path.join(dir_save, datasets_names[i].split('/')[-1].split('.')[0]+'all')
         np.savez_compressed(name, X=X, y=y, folds=folds)
         print('Create file '+ name+'.npz')
+        if just_first:
+            break
     #return name+'.npz'
 
 

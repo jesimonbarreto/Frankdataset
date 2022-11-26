@@ -112,9 +112,9 @@ class PAMAP2(Dataset):
 
     def preprocess(self):
         files = glob.glob(pathname=os.path.join(self.dir_dataset, "Optional", '*.dat'))
-        files.extend(glob.glob(pathname=os.path.join(self.dir_dataset, "Protocol",'*.dat')))
+        #files.extend(glob.glob(pathname=os.path.join(self.dir_dataset, "Protocol",'*.dat')))
         output_dir = self.dir_save
-
+        list_not_act = [0,9,10,11,18,19,20,24]
         for f in files:
             fmt_data = {}
             subject = int(f[-7:-4])
@@ -138,7 +138,7 @@ class PAMAP2(Dataset):
                 trial.append(instance)
 
             for act_id in fmt_data.keys():
-                if act_id != 0:
+                if act_id not in list_not_act:
                     for trial_id, trial in fmt_data[act_id].items():
                         trial = np.array(trial)
 
