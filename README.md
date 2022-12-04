@@ -10,7 +10,7 @@ Framework para criação de experimentos de modelos de reconhecimento de ativida
 Desenvolvido por 
 - Jesimon Barreto Santos
 
-Com contribuição de:
+Com contribuições de
 - Jéssica Sena
 - Gustavo de Siqueira
 - Guilherme Cramer
