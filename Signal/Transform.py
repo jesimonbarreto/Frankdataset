@@ -127,6 +127,134 @@ def dataset_to_datasets(datasets_names, dir_save, replace = False, norm = False,
             break
     #return name+'.npz'
 
+def SegmentData(motion_data, seg_size, action, lrcode):
+    segments = np.empty((0,seg_size,3))
+    labels = np.empty((0))
+    l_ing_data_x,l_ing_data_y,l_ing_data_z = [],[],[]   
+    r_ing_data_x,r_ing_data_y,r_ing_data_z = [],[],[]  
+    for i in range(len(motion_data)):
+        if motion_data[i][6] == action:
+            if motion_data[i][2] == lrcode[0]: 
+                l_ing_data_x.append(motion_data[i][3])
+                l_ing_data_y.append(motion_data[i][4])
+                l_ing_data_z.append(motion_data[i][5])
+            elif motion_data[i][2] == lrcode[1]:
+                r_ing_data_x.append(motion_data[i][3])
+                r_ing_data_y.append(motion_data[i][4])
+                r_ing_data_z.append(motion_data[i][5])
+
+    _start = 0
+    _end = seg_size/2
+    
+    for j in range(len(l_ing_data_x)):   
+
+        _end = _end + seg_size/2
+        if _end <= len(l_ing_data_x):
+            _x = l_ing_data_x[_start:_end]
+            _y = l_ing_data_y[_start:_end]
+            _z = l_ing_data_z[_start:_end]
+            segments = np.vstack([segments, np.dstack([_x,_y,_z])])#3xseg_size
+            labels = np.append(labels, action)
+            _start = _start + seg_size/2
+        else:
+            break
+    
+    _start = 0
+    _end = seg_size/2
+    
+    for j in range(len(r_ing_data_x)):   
+
+        _end = _end + seg_size/2
+        if _end <= len(r_ing_data_x):
+            _x = r_ing_data_x[_start:_end]
+            _y = r_ing_data_y[_start:_end]
+            _z = r_ing_data_z[_start:_end]
+            segments = np.vstack([segments, np.dstack([_x,_y,_z])])#3xseg_size
+            labels = np.append(labels, action)
+            _start = _start + seg_size/2
+        else:
+            break
+    
+    return segments, labels
+
+
+def AverageFilter(l, windowsize):#list windowsize default is 3,if change needs to change weights and N
+    _l = []
+    N = (windowsize-1)/2
+    for i in range(len(l)):
+        if i >= N and i <= len(l)-1-N:
+            _l.append(np.average(l[i-N:i+N+1],weights=[1 for j in range(windowsize)]))
+        else:
+            _l.append(l[i])
+    return _l
+
+
+def AveragedSegmentData(motion_data, seg_size, action, lrcode):
+    #segments = np.empty((0,seg_size,3))
+    segments = np.empty((0,seg_size*3))
+    labels = np.empty((0))
+    l_ing_data_x,l_ing_data_y,l_ing_data_z = [],[],[]   
+    r_ing_data_x,r_ing_data_y,r_ing_data_z = [],[],[]  
+    for i in range(len(motion_data)):
+        if motion_data[i][6] == action:
+            if motion_data[i][2] == lrcode[0]: 
+                l_ing_data_x.append(motion_data[i][3])
+                l_ing_data_y.append(motion_data[i][4])
+                l_ing_data_z.append(motion_data[i][5])
+            elif motion_data[i][2] == lrcode[1]:
+                r_ing_data_x.append(motion_data[i][3])
+                r_ing_data_y.append(motion_data[i][4])
+                r_ing_data_z.append(motion_data[i][5])
+
+    al_ing_data_x = AverageFilter(l_ing_data_x,11)
+    #print(al_ing_data_x)
+    al_ing_data_y = AverageFilter(l_ing_data_y,11)
+    al_ing_data_z = AverageFilter(l_ing_data_z,11)
+    ar_ing_data_x = AverageFilter(r_ing_data_x,11)
+    ar_ing_data_y = AverageFilter(r_ing_data_y,11)
+    ar_ing_data_z = AverageFilter(r_ing_data_z,11)
+    _start = 0
+    _end = seg_size/2
+    for j in range(len(l_ing_data_x)):   
+
+        _end = _end + seg_size/2
+        if _end <= len(l_ing_data_x):
+            _x = al_ing_data_x[_start:_end]
+            _y = al_ing_data_y[_start:_end]
+            _z = al_ing_data_z[_start:_end]
+            #segments = np.vstack([segments, np.dstack([_x,_y,_z])])#3xseg_size
+            segments = np.vstack([segments, _x+_y+_z])
+            labels = np.append(labels, action)
+            _start = _start + seg_size/2
+        else:
+            break
+    
+    _start = 0
+    _end = seg_size/2
+    
+    for j in range(len(r_ing_data_x)):   
+
+        _end = _end + seg_size/2
+        if _end <= len(r_ing_data_x):
+            _x = ar_ing_data_x[_start:_end]
+            _y = ar_ing_data_y[_start:_end]
+            _z = ar_ing_data_z[_start:_end]
+            #segments = np.vstack([segments, np.dstack([_x,_y,_z])])#3xseg_size need to change as segments = np.empty((0,seg_size,3))
+            segments = np.vstack([segments, _x+_y+_z])#seg_size+seg_size+seg_size
+            labels = np.append(labels, action)
+            _start = _start + seg_size/2
+        else:
+            break
+    
+    return segments, labels
+
+
+def luPreprocess(PATH, X, Y):
+    seg_size = X.size[1]
+    segments, labels = AveragedSegmentData(motion_data, seg_size, Y[1:], 1)
+    X = np.append(X, segments)
+    Y = np.append(Y, labels)
+                    
 
 
 if __name__ == '__main__':

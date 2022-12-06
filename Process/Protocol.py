@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 
 class Loso(object):
-    def __init__(self, list_datasets, overlapping = 0.0, time_wd=5, type_interp= 'cubic', replace = False):
+    def __init__(self, list_datasets, overlapping = 0.0, time_wd=5, transforms=[], type_interp= 'cubic', replace = False):
         self.list_datasets = list_datasets
         self.time_wd = time_wd
         self.activity = {}
@@ -30,6 +30,7 @@ class Loso(object):
         self.type_interp = type_interp
         self.replace = replace
         self.cont_sample_no_used = 0
+        self.transforms = []
 
     def add_consult_label(self, a):
         z = self.consult_label.copy()   # start with x's keys and values
@@ -154,6 +155,18 @@ class Loso(object):
             Y[i, self.activity[y[i]]] = 1.
         return Y
 
+
+    def apply_transforms(X, Y):
+        X_n = []
+        for trnsf in self.tranforms:
+            for v in range(len(X)):
+                x_n, _ = trnsf(X[v], Y[v])
+                X_n.append(x_n)
+        if len(X_n) == 0:
+            return X, Y
+        return np.array(X_n), np.array(y_n)
+
+
     def simple_generate(self, dir_save_file, new_freq = -1):
         
         if len(self.list_datasets) == 1:
@@ -198,7 +211,7 @@ class Loso(object):
             check_zeros = np.where(row != 0.)
             if check_zeros[0].shape[0] < 2: #An activity is performed just by one subject
                 invalid_rows.append(row)
-
+        self.X, self.Y = self.apply_transforms(self.X, self.Y)
         try:
             #if(len(invalid_rows) == 0):
             loso = LeaveOneGroupOut()

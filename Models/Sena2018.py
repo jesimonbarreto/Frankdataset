@@ -110,7 +110,10 @@ class Sena(MD):
         #[nsamples, channel1, time, axis]
         folds = tmp['folds']
         dataset_name = data_input_file.split('/')[-1]
-        data = [X[:,:,:,0:3],X[:,:,:,3:6]]
+        if len(X[0,0,0]==6)
+            data = [X[:,:,:,0:3],X[:,:,:,3:6]]
+        else:
+            data = X
         y = self.code_y(y)
         #del data
         n_class = y.shape[1]
