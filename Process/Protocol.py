@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 
 class Loso(object):
-    def __init__(self, list_datasets, overlapping = 0.0, time_wd=5, transforms=[], type_interp= 'cubic', replace = False):
+    def __init__(self, list_datasets, overlapping = 0.0, time_wd=5, transforms=[], type_interp= 'cubic', replace = False, select_activities=[]):
         self.list_datasets = list_datasets
         self.time_wd = time_wd
         self.activity = {}
@@ -31,11 +31,17 @@ class Loso(object):
         self.replace = replace
         self.cont_sample_no_used = 0
         self.transforms = []
+        self.select_activities = []
 
     def add_consult_label(self, a):
         z = self.consult_label.copy()   # start with x's keys and values
         z.update(a)    # modifies z with y's keys and values & returns None
         self.consult_label = z.copy()
+    
+    def set_select_activity(self, activities):
+        for i in range(len(activities)):
+            activities[i] = activities[i].lower()
+        self.select_activities = activities
 
     # Split trial in samples
     def sw(self, trial=None, freq = None):
@@ -91,7 +97,7 @@ class Loso(object):
         return self.subject
 
     def data_generator(self, files, data_name, dir_input_file, freq_data, new_freq):
-        for id_, fl in enumerate(files):
+        for id_, fl in tqdm(enumerate(files)):
             pkl = os.path.join(dir_input_file, data_name+'_'+str(id_)+'.pkl')
             with open(pkl, 'rb') as handle:
                 data = pickle.load(handle)
@@ -104,6 +110,10 @@ class Loso(object):
                 label = self.activity[label_]
                 subject_idx_ = self.subject[subject_]
                 
+                #select activities, if the activity is not in list, 
+                if len(self.select_activities)>0 and label_ not in self.select_activities:
+                    continue
+
                 trial = data[file]
 
 
@@ -135,12 +145,6 @@ class Loso(object):
     def set_name_act(self):
         self.name_act = True
     
-    def remove_subject(self, code):
-        pass
-
-    def remove_action(self, code):
-        pass
-
     def _to_categorical(self,y, nb_classes=None):
         '''Convert class vector (integers from 0 to nb_classes)
         to binary class matrix, for use with categorical models
@@ -156,9 +160,9 @@ class Loso(object):
         return Y
 
 
-    def apply_transforms(X, Y):
+    def apply_transforms(self, X, Y):
         X_n = []
-        for trnsf in self.tranforms:
+        for trnsf in self.transforms:
             for v in range(len(X)):
                 x_n, _ = trnsf(X[v], Y[v])
                 X_n.append(x_n)
@@ -203,26 +207,22 @@ class Loso(object):
 
         self.groups = np.array(self.groups)
         self.X = np.array(self.X)
-        #self.y = np.array(self.y)
         print('Samples not used by size: '+str(self.cont_sample_no_used))
         invalid_rows = []
         for row in self.fundamental_matrix:
-            print(row)
             check_zeros = np.where(row != 0.)
             if check_zeros[0].shape[0] < 2: #An activity is performed just by one subject
                 invalid_rows.append(row)
-        self.X, self.Y = self.apply_transforms(self.X, self.Y)
+        self.X, self.y = self.apply_transforms(self.X, self.y)
         try:
-            #if(len(invalid_rows) == 0):
             loso = LeaveOneGroupOut()
             tmp = loso.split(X=self.X, y=self.y, groups=self.groups)
-            folds =[]
+            folds = []
             for train_index, test_index in loso.split(self.X, self.y, self.groups):
                 folds.append((train_index, test_index))
 
             self.X = np.array(self.X)
             y_names = np.array(self.y)
-            #self.y = _to_categorical(y_names, len(self.activity))
             np.savez_compressed(os.path.join(dir_save_file,name_file), X=self.X, y=self.y, folds=folds)
             print('Create file '+ os.path.join(dir_save_file,name_file))
             print('Activities performed by less than 2 subjects')

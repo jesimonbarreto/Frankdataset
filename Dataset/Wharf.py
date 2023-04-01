@@ -1,11 +1,8 @@
 import os
-
 import numpy as np
-
 from .Datasets import Dataset
-
 from enum import Enum
-
+from tqdm import tqdm
 
 class SignalsWharf(Enum):
     acc_right_wrist_X = 0
@@ -14,20 +11,20 @@ class SignalsWharf(Enum):
 
 
 actNameWHARF = {
-    1:  'Brush teeth',
-    2:  'Climb stairs',
-    3:  'Comb hair',
-    4:  'Descend stairs',
-    5:  'Drink glass',
-    6:  'Eat meat',
-    7:  'Eat soup',
-    8:  'Getup bed',
-    9:  'Liedown bed',
-    10: 'Pour water',
-    11: 'Sitdown chair',
-    12: 'Standup chair',
-    13: 'Walk',
-    14: 'Use telephone'
+    1:  'BrushTeeth',
+    2:  'ClimbingStairs',
+    3:  'CombHair',
+    4:  'DescendingStairs',
+    5:  'Drinking',
+    6:  'Eating',
+    7:  'EatingSoup',
+    8:  'GetupBed',
+    9:  'LiedownBed',
+    10: 'PourWater',
+    11: 'Sitting',
+    12: 'StandupChair',
+    13: 'Walking',
+    14: 'UseTelephone'
 }
 
 
@@ -48,7 +45,7 @@ class WHARF(Dataset):
 
         print(len(txt_files))
 
-        for trial_id, filepath in enumerate(txt_files):
+        for trial_id, filepath in tqdm((txt_files)):
             filename = filepath.split(os.sep)[-1]
             act, subject = filename.split('-')[-2:]
             act = act.replace("_", " ")

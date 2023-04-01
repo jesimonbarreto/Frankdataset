@@ -2,6 +2,7 @@ from Dataset import Dataset
 import numpy as np
 import glob, os
 from enum import Enum
+from tqdm import tqdm
 
 
 class SignalsPAMAP2(Enum):
@@ -68,19 +69,19 @@ actNamePAMAP2 = {
     4:  'Walking',
     5:  'Running',
     6:  'Cycling',
-    7:  'Nordic_walking',
-    9:  'Watching_TV',
-    10: 'Computer_work',
-    11: 'Car_driving',
-    12: 'Ascending_stairs',
-    13: 'Descending_stairs',
-    16: 'Vacuum_cleaning',
+    7:  'NordicWalking',
+    9:  'WatchingTV',
+    10: 'Computerwork',
+    11: 'CarDriving',
+    12: 'AscendingStairs',
+    13: 'DescendingStairs',
+    16: 'VacuumCleaning',
     17: 'Ironing',
-    18: 'Folding_laundry',
-    19: 'House_cleaning',
-    20: 'Playing_soccer',
-    24: 'Rope_jumping',
-    0:  'Other_transient_activities'
+    18: 'FoldingLaundry',
+    19: 'HouseCleaning',
+    20: 'PlayingSoccer',
+    24: 'RopeJumping',
+    0:  'OtherTransientActivities'
 }
 
 
@@ -112,10 +113,9 @@ class PAMAP2(Dataset):
 
     def preprocess(self):
         files = glob.glob(pathname=os.path.join(self.dir_dataset, "Optional", '*.dat'))
-        #files.extend(glob.glob(pathname=os.path.join(self.dir_dataset, "Protocol",'*.dat')))
+        files.extend(glob.glob(pathname=os.path.join(self.dir_dataset, "Protocol",'*.dat')))
         output_dir = self.dir_save
-        list_not_act = [0,9,10,11,18,19,20,24]
-        for f in files:
+        for f in tqdm(files):
             fmt_data = {}
             subject = int(f[-7:-4])
             
@@ -138,20 +138,19 @@ class PAMAP2(Dataset):
                 trial.append(instance)
 
             for act_id in fmt_data.keys():
-                if act_id not in list_not_act:
-                    for trial_id, trial in fmt_data[act_id].items():
-                        trial = np.array(trial)
+                for trial_id, trial in fmt_data[act_id].items():
+                    trial = np.array(trial)
 
-                        # Sort by timestamp
-                        trial = trial[trial[:, 0].argsort()]
+                    # Sort by timestamp
+                    trial = trial[trial[:, 0].argsort()]
 
-                        signals = [signal.value for signal in self.signals_use]
-                        trial = trial[:, signals]
+                    signals = [signal.value for signal in self.signals_use]
+                    trial = trial[:, signals]
 
-                        # Filtro de NaNs
-                        indexes = ~np.isnan(trial).any(axis=1)
-                        trial = trial[indexes]
+                    # Filtro de NaNs
+                    indexes = ~np.isnan(trial).any(axis=1)
+                    trial = trial[indexes]
 
-                        act = actNamePAMAP2[act_id]
-                        self.add_info_data(act, subject, trial_id, trial, output_dir)
+                    act = actNamePAMAP2[act_id]
+                    self.add_info_data(act, subject, trial_id, trial, output_dir)
         self.save_data(output_dir)

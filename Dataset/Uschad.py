@@ -3,6 +3,7 @@ from scipy.io import loadmat
 from Dataset.Datasets import Dataset
 from enum import Enum
 import numpy as np
+from tqdm import tqdm
 
 
 class SignalsUSCHAD(Enum):
@@ -16,17 +17,17 @@ class SignalsUSCHAD(Enum):
 
 actNameUSCHAD = {
     1:  'Walking',
-    2:  'Walking_left',
-    3:  'Walking_right',
-    4:  'Walking_up',
-    5:  'Walking_down',
+    2:  'WalkingLeft',
+    3:  'WalkingRight',
+    4:  'WalkingUp',
+    5:  'WalkingDown',
     6:  'Running',
     7:  'Jumping',
     8:  'Sitting',
     9:  'Standing',
     10: 'Sleeping',
-    11: 'Elevator_up',
-    12: 'Elevator_down',
+    11: 'ElevatorUp',
+    12: 'ElevatorDown',
 }
 
 
@@ -62,7 +63,7 @@ class USCHAD(Dataset):
             if len(dirs) == 0:
                 mat_files.extend([os.path.join(root, f) for f in files])
 
-        for filepath in mat_files:
+        for filepath in tqdm(mat_files)):
             mat_file = loadmat(filepath)
             act = mat_file['activity'][0]
             subject = int(mat_file['subject'][0])

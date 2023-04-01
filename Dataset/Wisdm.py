@@ -2,7 +2,6 @@ from .Datasets import Dataset
 from enum import Enum
 import numpy as np
 
-
 class SignalsWisdm(Enum):
     acc_front_pants_pocket_X = 3
     acc_front_pants_pocket_Y = 4

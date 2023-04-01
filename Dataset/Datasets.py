@@ -54,13 +54,7 @@ class Dataset(metaclass=ABCMeta):
         output_name = '{}_s{}_t{}'.format(act.lower(), subject, trial_id)
         self.data[output_name] = trial
         if trial_id % self.trials_per_file == 0 and trial_id != 0:
-            try:
-                with open(output_dir+self.name+'_'+str(self.n_pkl)+'.pkl', 'wb') as handle:
-                    pickle.dump(self.data, handle, protocol=pickle.HIGHEST_PROTOCOL)
-                self.data = {}
-                self.n_pkl += 1
-            except:
-                sys.exit('Erro save pickle {} for {} dataset'.format(self.n_pkl, self.name))
+            self.save_data(output_dir)
 
     def save_data(self, output_dir):
         try:

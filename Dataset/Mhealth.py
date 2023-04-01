@@ -2,6 +2,7 @@ from .Datasets import Dataset
 import glob, os
 import numpy as np
 from enum import Enum
+from tqdm import tqdm
 
 
 class SignalsMHEALTH(Enum):
@@ -34,12 +35,12 @@ actNameMHEALTH = {
     0:  'Nothing',
     1:  'Standing',
     2:  'Sitting',
-    3:  'Lying_down',
+    3:  'LyingDown',
     4:  'Walking',
-    5:  'Climbing_stairs',
-    6:  'Waist_bends_forward',
-    7:  'Frontal_elevation_of_lower_arms',
-    8:  'Knees_bending_(crouching)',
+    5:  'ClimbingStairs',
+    6:  'WaistBendsForward',
+    7:  'FrontalElevationOfLowerArms',
+    8:  'KneesBending(crouching)',
     9:  'Cycling',
     10: 'Jogging',
     11: 'Running',
@@ -59,7 +60,7 @@ class MHEALTH(Dataset):
     def preprocess(self):
         files = glob.glob(os.path.join(self.dir_dataset,'*.log')) #glob.glob(pathname='*.log')
         output_dir = self.dir_save  #'../output'
-        for f in files:
+        for f in tqdm(files):
             if '.log' not in f:
                 continue
 

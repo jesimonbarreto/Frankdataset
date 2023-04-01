@@ -4,6 +4,7 @@ import glob
 import os
 from scipy.io import loadmat
 from enum import Enum
+from tqdm import tqdm
 
 
 class SignalsUtdmhad2(Enum):
@@ -20,7 +21,7 @@ actNameUTDMHAD2 = {
         23: 'Walking',
         24: 'Sitting',
         25: 'Standing',
-        26: 'Forward_lunge',
+        26: 'ForwardLunge',
         27: 'Squat'}
 
 
@@ -38,7 +39,7 @@ class UTDMHAD2(Dataset):
         pathname = os.path.join(self.dir_dataset, '*.mat')
         files = glob.glob(pathname=pathname)
 
-        for f in files:
+        for f in tqdm(files):
             act = int(os.path.split(f)[-1].split("_")[0].split("a")[-1])
             subject = int(os.path.split(f)[-1].split("_")[1].split("s")[-1])
             trial_id = int(os.path.split(f)[-1].split("_")[2].split("t")[-1])
