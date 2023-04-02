@@ -50,37 +50,12 @@
         ]
     },
     {
-        "name": "Utdmhad2",
-        "dir_data": "/home/jesimon/Documents/Project_sensors_dataset/dataset/PAMAP2_Dataset/",
-        "dir_system": "/home/jesimon/Documents/Project_sensors_dataset/preprocessed/",
-        "dir_save": "/home/jesimon/Documents/Project_sensors_dataset/generated/",
-        "freq": 100,
-        "new_freq": 100,
-        "time_wd": 5,
-        "type_interp": "cubic",
-        "norm": false,
-        "replace": false,
-        "overlapping": 0.0,
-        "transforms": [],
-        "sensors": [
-                "acc_right_thigh_X", 
-                "acc_right_thigh_Y",
-                "acc_right_thigh_Z"
-        ],
-        "select_activities": [
-            "Lying",
-            "Sitting",
-            "Standing",
-            "Walking"
-        ]
-    },
-    {
         "name": "Wisdm",
-        "dir_data": "/home/jesimon/Documents/Project_sensors_dataset/dataset/PAMAP2_Dataset/",
+        "dir_data": "/home/jesimon/Documents/Project_sensors_dataset/dataset/wosdm/",
         "dir_system": "/home/jesimon/Documents/Project_sensors_dataset/preprocessed/",
         "dir_save": "/home/jesimon/Documents/Project_sensors_dataset/generated/",
-        "freq": 100,
-        "new_freq": 100,
+        "freq": 20,
+        "new_freq": 20,
         "time_wd": 5,
         "type_interp": "cubic",
         "norm": false,
@@ -101,7 +76,7 @@
     },
     {
         "name": "Uschad",
-        "dir_data": "/home/jesimon/Documents/Project_sensors_dataset/dataset/PAMAP2_Dataset/",
+        "dir_data": "/home/jesimon/Documents/Project_sensors_dataset/dataset/USC-HAD/",
         "dir_system": "/home/jesimon/Documents/Project_sensors_dataset/preprocessed/",
         "dir_save": "/home/jesimon/Documents/Project_sensors_dataset/generated/",
         "freq": 100,

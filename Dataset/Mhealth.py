@@ -35,7 +35,7 @@ actNameMHEALTH = {
     0:  'Nothing',
     1:  'Standing',
     2:  'Sitting',
-    3:  'LyingDown',
+    3:  'Lying',
     4:  'Walking',
     5:  'ClimbingStairs',
     6:  'WaistBendsForward',
